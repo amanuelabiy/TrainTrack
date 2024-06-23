@@ -6,3 +6,4 @@ export { default as Register } from "./Register";
 export { default as Settings } from "./Settings";
 export { default as Today } from "./Today";
 export { default as Upcoming } from "./Upcoming";
+export { default as Statistics } from "./Statistics";

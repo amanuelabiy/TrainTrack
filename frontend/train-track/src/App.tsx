@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Route, RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import {
   Layout,
@@ -9,6 +9,7 @@ import {
   Settings,
   Today,
   Upcoming,
+  Statistics,
 } from "./pages";
 
 const router = createBrowserRouter([
@@ -44,15 +45,15 @@ const router = createBrowserRouter([
         path: "upcoming",
         element: <Upcoming />,
       },
+      {
+        path: "statistics",
+        element: <Statistics />,
+      },
     ],
   },
 ]);
 
 function App() {
-  return (
-    <div>
-      <h1 className="text-7xl font-bold ">App</h1>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 export default App;
