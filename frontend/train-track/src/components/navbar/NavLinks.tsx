@@ -3,19 +3,21 @@ import { NavLink } from "react-router-dom";
 
 function NavLinks() {
   return (
-    <div>
+    <div className="flex flex-col m-1  gap-2">
       {links.map((link) => {
         return (
           <NavLink
             to={link.href}
             key={link.label}
-            className={(isActive) =>
-              `capitalize font-light tracking-wide ${
-                isActive ? "text-primary" : ""
-              }`
+            className={({ isActive }) =>
+              `capitalize font-light tracking-wide block text-lg rounded-lg ${
+                isActive ? "bg-gray-200" : ""
+              } hover:bg-gray-200 p-2 m-0`
             }
           >
-            {link.label}
+            <span className="text-sm font-medium leading-normal">
+              {link.label == "mysplit" ? "My Split" : link.label}
+            </span>
           </NavLink>
         );
       })}
