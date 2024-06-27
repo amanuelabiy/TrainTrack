@@ -4,7 +4,7 @@ import Navbar from "@/components/navbar/Navbar";
 
 function Layout() {
   const location = useLocation();
-  const hideNavbarPaths = ["/login", "register"];
+  const hideNavbarPaths = ["/login", "/register"];
 
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-gray-100">
@@ -14,7 +14,7 @@ function Layout() {
           <Outlet />
         </div>
         <div className="lg:hidden absolute top-4 right-4">
-          <MobileDropdown />
+          {!hideNavbarPaths.includes(location.pathname) && <MobileDropdown />}
         </div>
       </div>
     </div>
