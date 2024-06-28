@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { RegisterForm } from "../types/accountTypes";
 import Input from "@/components/register/Input";
 import RegisterBtn from "@/components/register/RegisterBtn";
@@ -18,11 +19,11 @@ function Register() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center	">
-      <form>
-        <h1 className="font-bold text-center tracking-tight text-28px my-32">
-          Create an Account
-        </h1>
+    <div className="flex flex-col items-center justify-center">
+      <h1 className="font-bold text-center tracking-tight text-28px mt-32 mb-3">
+        Create an Account
+      </h1>
+      <form className="mx-auto">
         <Input
           id="username"
           label="Username"
@@ -61,6 +62,18 @@ function Register() {
         />
         <RegisterBtn />
       </form>
+      <Link
+        to="/login"
+        className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline"
+      >
+        Already have an account?
+      </Link>
+      <Link
+        to="/login"
+        className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline"
+      >
+        Login
+      </Link>
     </div>
   );
 }

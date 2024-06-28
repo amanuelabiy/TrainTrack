@@ -19,7 +19,7 @@ function Input({
   name,
 }: InputProps) {
   return (
-    <div className="flex-col">
+    <div className="flex-col mt-9 ">
       <label
         className="block text-gray-700 text-sm font-bold mb-2"
         htmlFor={id}
@@ -32,7 +32,7 @@ function Input({
         name={name}
         value={value}
         onChange={onChange}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+        className="bg-gray-50 border border-gray-300  rounded-lg w-96 p-2.5"
         placeholder={placeholder}
         required
       ></input>
