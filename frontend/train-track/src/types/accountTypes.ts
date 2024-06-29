@@ -5,6 +5,12 @@ export interface RegisterForm {
   confirmedPassword: string;
 }
 
+export interface LoginForm {
+  email: string;
+  username: string;
+  password: string;
+}
+
 export interface InputProps {
   id: string;
   label: string;

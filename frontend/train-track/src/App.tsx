@@ -1,4 +1,5 @@
 import { Route, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import {
   Layout,
@@ -11,6 +12,8 @@ import {
   Upcoming,
   Statistics,
 } from "./pages";
+
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const router = createBrowserRouter([
   {
@@ -54,6 +57,10 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <GoogleOAuthProvider clientId={clientId}>
+      <RouterProvider router={router} />
+    </GoogleOAuthProvider>
+  );
 }
 export default App;

@@ -1,4 +1,3 @@
-import MobileDropdown from "./MobileDropdown";
 import NavLinks from "./NavLinks";
 import UserProfileBtn from "./UserProfileBtn";
 
