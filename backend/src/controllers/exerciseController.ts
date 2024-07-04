@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import ExerciseModel from "../models/Exercise";
 
-export const createExercse: RequestHandler = async (req, res, next) => {
+export const createExercise: RequestHandler = async (req, res, next) => {
   const name = req.body.name;
   const sets = req.body.sets;
   const reps = req.body.reps;

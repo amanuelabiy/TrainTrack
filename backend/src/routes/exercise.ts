@@ -3,6 +3,6 @@ import * as ExerciseController from "../controllers/exerciseController";
 
 const router = express.Router();
 
-router.post("/", ExerciseController.createExercse);
+router.post("/", ExerciseController.createExercise);
 
 export default router;

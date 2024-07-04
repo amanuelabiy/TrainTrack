@@ -1,6 +1,7 @@
 import { InferSchemaType, Schema, model } from "mongoose";
 
 interface IExercise {
+  workoutName: string;
   name: string;
   sets: number;
   reps: number;
@@ -9,6 +10,7 @@ interface IExercise {
 }
 
 const exerciseSchema: Schema<IExercise> = new Schema({
+  workoutName: { type: String, required: true },
   name: { type: String, required: true },
   sets: { type: Number, required: true },
   reps: { type: Number, require: true },
