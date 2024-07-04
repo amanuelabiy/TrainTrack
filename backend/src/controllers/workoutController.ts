@@ -15,30 +15,16 @@ export const createWorkout: RequestHandler = async (req, res, next) => {
 
     const exerciseDocs = await Promise.all(
       exercises.map(async (exercise: any) => {
-        return ExerciseModel.findOneAndUpdate(
-          {
-            workoutName,
-            name: exercise.name,
-          },
-          exercise,
-          { new: true, upsert: true }
-        ).exec();
+        const newExercise = new ExerciseModel(exercise);
+        await newExercise.save();
+        return newExercise._id;
       })
     );
 
-    // Find all exercises with same workoutName
-    const allExercises = await ExerciseModel.find({ workoutName }).exec();
-
-    //Get Exercise IDs
-
-    const exerciseIds = allExercises.map((exercise) => exercise._id);
-
-    // Create the workout with linked exercises
-
     const newWorkout = new WorkoutModel({
       workoutName,
-      exercises: exercises,
-      notes: notes,
+      exercises: exerciseDocs,
+      notes,
     });
 
     await newWorkout.save();
