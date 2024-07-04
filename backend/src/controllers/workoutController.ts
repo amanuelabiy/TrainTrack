@@ -34,3 +34,12 @@ export const createWorkout: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getWorkouts: RequestHandler = async (req, res, next) => {
+  try {
+    const workouts = await WorkoutModel.find().exec();
+    res.status(200).json(workouts);
+  } catch (error) {
+    next(error);
+  }
+};
