@@ -1,44 +1,22 @@
-import { Schema, model, Document } from "mongoose";
+import { InferSchemaType, Schema, model } from "mongoose";
+import Exercise, { IExercise } from "./Exercise";
 
-interface Exercise {
-  name: string;
-  sets: number;
-  reps: number;
-  weight: number;
+interface IWorkout {
+  workoutName: string;
+  exercises: IExercise[];
   notes?: string;
 }
 
-interface Workout extends Document {
-  userId: Schema.Types.ObjectId;
-  date: Date;
-  name: string;
-  exercises: Exercise[];
-  duration: number;
-  notes?: string;
-}
-
-const ExerciseSchema = new Schema<Exercise>({
-  name: { type: String, required: true },
-  sets: { type: Number, required: true },
-  reps: { type: Number, required: true },
-  weight: { type: Number, required: true },
-  notes: { type: String },
-});
-
-const WorkoutSchema = new Schema<Workout>(
+const workoutSchema: Schema<IWorkout> = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    date: { type: Date, default: Date.now, required: true },
-    name: { type: String, required: true },
-    exercises: { type: [ExerciseSchema], required: true },
-    duration: { type: Number, required: true },
-    notes: { type: String },
+    workoutName: { type: String, required: true },
+    exercises: { type: [Exercise], required: true },
+    notes: { type: String, required: false },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Workout = model<Workout>("Workout, WorkoutSchema");
+type Workout = InferSchemaType<typeof workoutSchema>;
 
-export default Workout;
+export default model<Workout>("Workout", workoutSchema);
+export { IWorkout };
