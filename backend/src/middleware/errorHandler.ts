@@ -8,7 +8,7 @@ export const errorHanlder = (
   next: NextFunction
 ) => {
   console.error(error);
-  let statusCode = 5000;
+  let statusCode = 500;
   let errorMessage = "An unknown error has occurred";
 
   if (error instanceof ValidationError) {

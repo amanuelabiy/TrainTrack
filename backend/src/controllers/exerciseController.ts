@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import ExerciseModel from "../models/Exercise";
 
 export const createExercise: RequestHandler = async (req, res, next) => {
+  const workoutName = req.body.workoutName;
   const name = req.body.name;
   const sets = req.body.sets;
   const reps = req.body.reps;
@@ -10,6 +11,7 @@ export const createExercise: RequestHandler = async (req, res, next) => {
 
   try {
     const newExercise = await ExerciseModel.create({
+      workoutName: workoutName,
       name: name,
       sets: sets,
       reps: reps,
