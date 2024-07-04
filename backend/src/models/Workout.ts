@@ -1,5 +1,4 @@
 import { InferSchemaType, Schema, model } from "mongoose";
-import Exercise, { IExercise } from "./Exercise";
 
 interface IWorkout {
   workoutName: string;

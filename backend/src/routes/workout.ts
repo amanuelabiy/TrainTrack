@@ -7,4 +7,6 @@ router.post("/", WorkoutController.createWorkout);
 
 router.get("/", WorkoutController.getWorkouts);
 
+router.get("/:workoutId", WorkoutController.getWorkout);
+
 export default router;

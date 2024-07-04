@@ -1,7 +1,16 @@
 import { RequestHandler } from "express";
 import ExerciseModel from "../models/Exercise";
+import { IExercise } from "../models/Exercise";
+import createHttpError from "http-errors";
 
-export const createExercise: RequestHandler = async (req, res, next) => {
+interface ExerciseBody extends IExercise {}
+
+export const createExercise: RequestHandler<
+  unknown,
+  unknown,
+  ExerciseBody,
+  unknown
+> = async (req, res, next) => {
   const workoutName = req.body.workoutName;
   const name = req.body.name;
   const sets = req.body.sets;
@@ -10,6 +19,10 @@ export const createExercise: RequestHandler = async (req, res, next) => {
   const notes = req.body.notes;
 
   try {
+    if (!workoutName || !name || !sets || !reps) {
+      throw createHttpError(400, "Missing or Invalid Exercise Fields");
+    }
+
     const newExercise = await ExerciseModel.create({
       workoutName: workoutName,
       name: name,
