@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import exerciseRoutes from "./routes/exercise";
 import workoutRoutes from "./routes/workout";
 import errorHandler from "./middleware/errorHandler";

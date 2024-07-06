@@ -4,6 +4,7 @@ import ExerciseModel from "../models/Exercise";
 import { IExercise } from "../models/Exercise";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
+import { createExercise } from "../services/exerciseService";
 
 interface WorkoutBody {
   workoutName?: string;
@@ -28,7 +29,7 @@ export const createWorkout: RequestHandler<
 
     const exerciseDocs = await Promise.all(
       exercises.map(async (exercise: any) => {
-        const newExercise = new ExerciseModel(exercise);
+        const newExercise = await createExercise(exercise);
         await newExercise.save();
         return newExercise._id;
       })
@@ -39,8 +40,6 @@ export const createWorkout: RequestHandler<
       exercises: exerciseDocs,
       notes,
     });
-
-    console.log(exerciseDocs);
 
     await newWorkout.save();
 
