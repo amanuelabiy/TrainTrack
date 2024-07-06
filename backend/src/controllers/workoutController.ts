@@ -76,3 +76,38 @@ export const getWorkout: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+interface UpdateWorkoutParams {
+  workoutId: string;
+}
+
+interface UpdateWorkoutBody {
+  workoutName?: string;
+  exercises?: Partial<IExercise>[];
+  notes?: string;
+}
+
+export const updateWorkout: RequestHandler<
+  UpdateWorkoutParams,
+  unknown,
+  UpdateWorkoutBody,
+  unknown
+> = async (req, res, next) => {
+  const workoutId = req.params.workoutId;
+
+  const newWorkoutName = req.body.workoutName;
+  const newExercises = req.body.exercises;
+  const newNotes = req.body.notes;
+
+  try {
+    if (!mongoose.isValidObjectId(workoutId)) {
+      throw createHttpError(400, "Invalid Workout Id");
+    }
+
+    if (!newWorkoutName) {
+      throw createHttpError(400, "You cannot update a workout without a name");
+    }
+
+    const workout = await WorkoutModel.findById(workoutId).exec();
+  } catch (error) {}
+};
