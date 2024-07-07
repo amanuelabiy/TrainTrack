@@ -86,6 +86,12 @@ module.exports = {
       fontSize: {
         "28px": "28px",
       },
+      fontFamily: {
+        lilitaOne: ["Lilita One", "sans-serif"],
+      },
+      screens: {
+        custom: "1255px",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

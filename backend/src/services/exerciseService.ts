@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
 import ExerciseModel from "../models/Exercise";
 import { IExercise } from "../models/Exercise";
+import mongoose from "mongoose";
 
 export const createExercise = async (exerciseData: IExercise) => {
   const workoutName = exerciseData.workoutName;
@@ -32,4 +33,25 @@ export const createExercise = async (exerciseData: IExercise) => {
     }
     throw createHttpError(500, "An unexpected service error has occured");
   }
+};
+
+export const updateExercise = async (
+  exerciseId: string,
+  update: Partial<IExercise>
+) => {
+  if (!mongoose.isValidObjectId(exerciseId)) {
+    throw createHttpError(400, "Invalid Exercise Id");
+  }
+
+  const updatedExercise = await ExerciseModel.findByIdAndUpdate(
+    exerciseId,
+    update,
+    { new: true }
+  );
+
+  if (!updateExercise) {
+    throw createHttpError(404, "Exercise not found");
+  }
+
+  return updatedExercise;
 };

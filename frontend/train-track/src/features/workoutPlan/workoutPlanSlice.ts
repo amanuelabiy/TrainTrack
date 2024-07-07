@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { WorkoutPlanState } from "@/types";
+import { WorkoutPlanState, WorkoutPlan } from "@/types/workoutTypes";
 
 const initialState: WorkoutPlanState = {
   workoutPlans: [],
@@ -10,7 +10,13 @@ const initialState: WorkoutPlanState = {
 const workoutPlanSlice = createSlice({
   name: "workout plan",
   initialState,
-  reducers: {},
+  reducers: {
+    setWorkoutPlans(state, action: PayloadAction<WorkoutPlan[]>) {
+      state.workoutPlans = action.payload;
+    },
+  },
 });
+
+export const { setWorkoutPlans } = workoutPlanSlice.actions;
 
 export default workoutPlanSlice.reducer;

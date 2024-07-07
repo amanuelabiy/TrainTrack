@@ -12,7 +12,7 @@ export interface WorkoutState {
 }
 
 export interface WorkoutPlan {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   workouts: Workout[];

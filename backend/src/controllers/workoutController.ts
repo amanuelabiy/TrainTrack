@@ -4,7 +4,7 @@ import ExerciseModel from "../models/Exercise";
 import { IExercise } from "../models/Exercise";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
-import { createExercise } from "../services/exerciseService";
+import { createExercise, updateExercise } from "../services/exerciseService";
 
 interface WorkoutBody {
   workoutName?: string;
@@ -51,7 +51,7 @@ export const createWorkout: RequestHandler<
 
 export const getWorkouts: RequestHandler = async (req, res, next) => {
   try {
-    const workouts = await WorkoutModel.find().exec();
+    const workouts = await WorkoutModel.find().populate("exercises").exec();
     res.status(200).json(workouts);
   } catch (error) {
     next(error);
@@ -65,7 +65,9 @@ export const getWorkout: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Invalid workout id");
     }
 
-    const workout = await WorkoutModel.findById(workoutId).exec();
+    const workout = await WorkoutModel.findById(workoutId)
+      .populate("exercises")
+      .exec();
 
     if (!workout) {
       throw createHttpError(404, "Workout Not Found");
@@ -87,27 +89,67 @@ interface UpdateWorkoutBody {
   notes?: string;
 }
 
-export const updateWorkout: RequestHandler<
-  UpdateWorkoutParams,
-  unknown,
-  UpdateWorkoutBody,
-  unknown
-> = async (req, res, next) => {
-  const workoutId = req.params.workoutId;
+// export const updateWorkout: RequestHandler<
+//   UpdateWorkoutParams,
+//   unknown,
+//   UpdateWorkoutBody,
+//   unknown
+// > = async (req, res, next) => {
+//   const workoutId = req.params.workoutId;
 
-  const newWorkoutName = req.body.workoutName;
-  const newExercises = req.body.exercises;
-  const newNotes = req.body.notes;
+//   const newWorkoutName = req.body.workoutName;
+//   const newExercises = req.body.exercises;
+//   const newNotes = req.body.notes;
 
-  try {
-    if (!mongoose.isValidObjectId(workoutId)) {
-      throw createHttpError(400, "Invalid Workout Id");
-    }
+//   try {
+//     if (!mongoose.isValidObjectId(workoutId)) {
+//       throw createHttpError(400, "Invalid Workout Id");
+//     }
 
-    if (!newWorkoutName) {
-      throw createHttpError(400, "You cannot update a workout without a name");
-    }
+//     if (!newWorkoutName) {
+//       throw createHttpError(400, "You cannot update a workout without a name");
+//     }
 
-    const workout = await WorkoutModel.findById(workoutId).exec();
-  } catch (error) {}
-};
+//     if (!newExercises) {
+//       throw createHttpError(
+//         400,
+//         "You cannot update a workout without exercises"
+//       );
+//     }
+
+//     const workout = await WorkoutModel.findById(workoutId)
+//       .populate("exercises")
+//       .exec();
+
+//     if (!workout) {
+//       throw createHttpError(404, "Workout not found");
+//     }
+
+//     workout.workoutName = newWorkoutName;
+//     workout.notes = newNotes;
+
+//     if (newExercises) {
+//       for (const exercise of newExercises) {
+//         if ((exercise as IExercise)._id) {
+//           await updateExercise((exercise as IExercise)._id, exercise);
+//         } else {
+//           const requiredFields: Required<IExercise> = {
+//             workoutName: newWorkoutName, // Ensure this is set correctly
+//             name: exercise.name!,
+//             sets: exercise.sets!,
+//             reps: exercise.reps!,
+//             weight: exercise.weight || 0,
+
+//           };
+//           const newExercise = await createExercise(exercise);
+//           workout.exercises.push(newExercise._id as  mongoose.Types.ObjectId);
+//       }
+//     }
+
+//     const updatedWorkout = await workout.save();
+
+//     res.status(200).json(updatedWorkout);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
