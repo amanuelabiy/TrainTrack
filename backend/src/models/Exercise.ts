@@ -1,6 +1,13 @@
-import { InferSchemaType, Schema, model } from "mongoose";
+import {
+  InferSchemaType,
+  Schema,
+  TypeExpressionOperator,
+  Types,
+  model,
+} from "mongoose";
 
 interface IExercise {
+  _id?: Types.ObjectId;
   workoutName: string;
   name: string;
   sets: number;

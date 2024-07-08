@@ -1,8 +1,8 @@
-import { InferSchemaType, Schema, model } from "mongoose";
+import { InferSchemaType, Schema, Types, model } from "mongoose";
 
 interface IWorkout {
   workoutName: string;
-  exercises: Schema.Types.ObjectId[];
+  exercises: Types.ObjectId[];
   notes?: string;
 }
 

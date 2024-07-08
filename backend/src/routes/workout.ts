@@ -9,4 +9,8 @@ router.get("/", WorkoutController.getWorkouts);
 
 router.get("/:workoutId", WorkoutController.getWorkout);
 
+router.patch("/:workoutId", WorkoutController.updateWorkout);
+
+router.delete("/:workoutId", WorkoutController.deleteWorkout);
+
 export default router;

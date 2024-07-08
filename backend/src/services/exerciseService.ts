@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import ExerciseModel from "../models/Exercise";
 import { IExercise } from "../models/Exercise";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export const createExercise = async (exerciseData: IExercise) => {
   const workoutName = exerciseData.workoutName;
@@ -36,7 +36,7 @@ export const createExercise = async (exerciseData: IExercise) => {
 };
 
 export const updateExercise = async (
-  exerciseId: string,
+  exerciseId: Types.ObjectId,
   update: Partial<IExercise>
 ) => {
   if (!mongoose.isValidObjectId(exerciseId)) {
@@ -54,4 +54,18 @@ export const updateExercise = async (
   }
 
   return updatedExercise;
+};
+
+export const deleteExercise = async (exerciseId: Types.ObjectId) => {
+  if (!mongoose.isValidObjectId(exerciseId)) {
+    throw createHttpError(400, "Invalid Exercise Id");
+  }
+
+  const deletedExercise = await ExerciseModel.findByIdAndDelete(exerciseId);
+
+  if (!deletedExercise) {
+    throw createHttpError(404, "Exercise not found");
+  }
+
+  return deletedExercise;
 };
