@@ -10,9 +10,7 @@ function MySplit() {
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold font-lilitaOne">
-        My Workout Split
-      </h1>
+      <h1 className="text-3xl font-semibold">My Workout Split</h1>
       {workoutPlans.length === 0 && (
         <>
           <CreateCustomSplit />

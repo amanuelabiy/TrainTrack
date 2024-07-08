@@ -35,6 +35,22 @@ export const createExercise = async (exerciseData: IExercise) => {
   }
 };
 
+export const getExercise = async (exerciseId: Types.ObjectId) => {
+  const exercise = await ExerciseModel.findById(exerciseId).exec();
+
+  if (!exercise) {
+    throw createHttpError(404, "Exercise Not Found");
+  }
+
+  return exercise;
+};
+
+export const getExercises = async () => {
+  const exercises = await ExerciseModel.find().exec();
+
+  return exercises;
+};
+
 export const updateExercise = async (
   exerciseId: Types.ObjectId,
   update: Partial<IExercise>

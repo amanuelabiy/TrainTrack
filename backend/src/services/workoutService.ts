@@ -5,15 +5,17 @@ import Workout, { IWorkout } from "../models/Workout";
 import { updateExercise, createExercise } from "./exerciseService";
 import ExerciseModel, { IExercise } from "models/Exercise";
 import { deleteExercise } from "./exerciseService";
+import { Day } from "types/types";
 
 interface WorkoutData {
   workoutName: string;
   exercises: IExercise[];
+  day: Day;
   notes?: string;
 }
 
 export const createWorkout = async (workoutData: WorkoutData) => {
-  const { workoutName, exercises, notes } = workoutData;
+  const { workoutName, exercises, day, notes } = workoutData;
 
   try {
     const exerciseDocs = await Promise.all(
@@ -28,6 +30,7 @@ export const createWorkout = async (workoutData: WorkoutData) => {
       workoutName,
       exercises: exerciseDocs,
       notes,
+      day,
     });
 
     await newWorkout.save();
@@ -71,11 +74,13 @@ interface UpdateWorkoutData {
   workoutId: Types.ObjectId;
   newWorkoutName?: string;
   newExercises?: Partial<IExercise>[];
+  newDay?: Day;
   newNotes?: string;
 }
 
 export const updateWorkout = async (updateData: UpdateWorkoutData) => {
-  const { workoutId, newWorkoutName, newExercises, newNotes } = updateData;
+  const { workoutId, newWorkoutName, newExercises, newNotes, newDay } =
+    updateData;
 
   const workout = await WorkoutModel.findById(workoutId).exec();
 
@@ -89,6 +94,10 @@ export const updateWorkout = async (updateData: UpdateWorkoutData) => {
 
   if (newNotes) {
     workout.notes = newNotes;
+  }
+
+  if (newDay) {
+    workout.day = newDay;
   }
 
   if (newExercises && Array.isArray(newExercises)) {

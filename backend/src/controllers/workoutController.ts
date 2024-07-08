@@ -6,10 +6,12 @@ import createHttpError from "http-errors";
 import mongoose, { Types } from "mongoose";
 import { createExercise, updateExercise } from "../services/exerciseService";
 import * as workoutService from "../services/workoutService";
+import { Day } from "../types/types";
 
 interface WorkoutBody {
   workoutName?: string;
   exercises?: IExercise[];
+  day?: Day;
   notes?: string;
 }
 
@@ -19,16 +21,17 @@ export const createWorkout: RequestHandler<
   WorkoutBody,
   unknown
 > = async (req, res, next) => {
-  const { workoutName, exercises, notes } = req.body;
+  const { workoutName, exercises, day, notes } = req.body;
 
   try {
-    if (!workoutName || !exercises || !Array.isArray(exercises)) {
+    if (!workoutName || !exercises || !day || !Array.isArray(exercises)) {
       throw createHttpError(400, "Missing or Invalid Workout Fields");
     }
 
     const newWorkout = await workoutService.createWorkout({
       workoutName,
       exercises,
+      day,
       notes,
     });
     res.status(201).json(newWorkout);
@@ -75,6 +78,7 @@ interface UpdateWorkoutParams {
 interface UpdateWorkoutBody {
   workoutName?: string;
   exercises?: Partial<IExercise>[];
+  day: Day;
   notes?: string;
 }
 
@@ -87,6 +91,7 @@ export const updateWorkout: RequestHandler<
   const workoutId = req.params.workoutId;
 
   const newWorkoutName = req.body.workoutName;
+  const newDay = req.body.day;
   const newExercises = req.body.exercises;
   const newNotes = req.body.notes;
 
@@ -95,7 +100,7 @@ export const updateWorkout: RequestHandler<
       throw createHttpError(400, "Invalid Workout Id");
     }
 
-    if (!newWorkoutName && !newExercises && !newNotes) {
+    if (!newWorkoutName && !newExercises && !newNotes && !newDay) {
       throw createHttpError(400, "No valid fields to update");
     }
 
@@ -103,6 +108,7 @@ export const updateWorkout: RequestHandler<
       workoutId: new mongoose.Types.ObjectId(workoutId),
       newWorkoutName: newWorkoutName,
       newExercises: newExercises,
+      newDay: newDay,
       newNotes: newNotes,
     };
 
