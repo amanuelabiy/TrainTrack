@@ -2,7 +2,7 @@ import { InferSchemaType, Schema, Types, model } from "mongoose";
 import { Day } from "../types/types";
 
 interface IWorkout {
-  _id: Types.ObjectId;
+  _id?: Types.ObjectId;
   workoutName: string;
   exercises: Types.ObjectId[];
   day: Day;
@@ -13,7 +13,7 @@ const workoutSchema: Schema<IWorkout> = new Schema(
   {
     workoutName: { type: String, required: true },
     exercises: [
-      { type: Schema.Types.ObjectId, ref: "Exercise", required: false },
+      { type: Schema.Types.ObjectId, ref: "Exercise", required: true },
     ],
     day: { type: String, enum: Object.values(Day), required: true },
     notes: { type: String, required: false },

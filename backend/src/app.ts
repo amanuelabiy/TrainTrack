@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import exerciseRoutes from "./routes/exercise";
 import workoutRoutes from "./routes/workout";
+import workoutSplitRoutes from "./routes/workoutSplit";
 import errorHandler from "./middleware/errorHandler";
 import morgan from "morgan";
 import createHttpError from "http-errors";
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use("/api/exercises", exerciseRoutes);
 
 app.use("/api/workouts", workoutRoutes);
+
+app.use("/api/workoutSplit", workoutSplitRoutes);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found"));
