@@ -1,11 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import workoutReducer from "./features/workout/workoutSlice";
+
 import progressReducer from "./features/progress/progressSlice";
 import workoutPlanReducer from "./features/workoutPlan/workoutPlanSlice";
 
 export const store = configureStore({
   reducer: {
-    workoutState: workoutReducer,
     progressState: progressReducer,
     workoutPlanState: workoutPlanReducer,
   },

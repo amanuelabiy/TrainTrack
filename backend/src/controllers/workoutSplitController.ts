@@ -42,38 +42,38 @@ interface UpdateWorkoutSplitBody {
   workouts?: Partial<IWorkout>[];
 }
 
-export const updateWorkoutSplit: RequestHandler<
-  UpdateWorkoutSplitParams,
-  unknown,
-  UpdateWorkoutSplitBody,
-  unknown
-> = async (req, res, next) => {
-  const workoutSplitId = req.params.workoutSplitId;
+// export const updateWorkoutSplit: RequestHandler<
+//   UpdateWorkoutSplitParams,
+//   unknown,
+//   UpdateWorkoutSplitBody,
+//   unknown
+// > = async (req, res, next) => {
+//   const workoutSplitId = req.params.workoutSplitId;
 
-  const newWorkoutSplitName = req.body.name;
-  const newWorkouts = req.body.workouts;
+//   const newWorkoutSplitName = req.body.name;
+//   const newWorkouts = req.body.workouts;
 
-  try {
-    if (!mongoose.isValidObjectId(workoutSplitId)) {
-      throw createHttpError(400, "Invalid Workout Id");
-    }
+//   try {
+//     if (!mongoose.isValidObjectId(workoutSplitId)) {
+//       throw createHttpError(400, "Invalid Workout Id");
+//     }
 
-    if (!newWorkoutSplitName && !newWorkouts) {
-      throw createHttpError(400, "No valid fiels to update");
-    }
+//     if (!newWorkoutSplitName && !newWorkouts) {
+//       throw createHttpError(400, "No valid fiels to update");
+//     }
 
-    const newUpdateData = {
-      workoutSplitId: new mongoose.Types.ObjectId(workoutSplitId),
-      newWorkoutSplitName: newWorkoutSplitName,
-      newWorkouts: newWorkouts,
-    };
+//     const newUpdateData = {
+//       workoutSplitId: new mongoose.Types.ObjectId(workoutSplitId),
+//       newWorkoutSplitName: newWorkoutSplitName,
+//       newWorkouts: newWorkouts,
+//     };
 
-    const updatedWorkoutSplit = await workoutSplitService.updateWorkoutSplit(
-      newUpdateData
-    );
+//     const updatedWorkoutSplit = await workoutSplitService.updateWorkoutSplit(
+//       newUpdateData
+//     );
 
-    res.status(200).json(updatedWorkoutSplit);
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(200).json(updatedWorkoutSplit);
+//   } catch (error) {
+//     next(error);
+//   }
+// };

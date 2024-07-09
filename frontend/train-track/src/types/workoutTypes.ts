@@ -19,7 +19,7 @@ export interface WorkoutPlan {
 }
 
 export interface WorkoutPlanState {
-  workoutPlans: WorkoutPlan[];
+  workouts: Workout[];
   loading: boolean;
   error: string | null;
 }

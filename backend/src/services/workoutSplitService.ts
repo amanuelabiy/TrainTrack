@@ -56,104 +56,104 @@ export const createWorkoutSplit = async (splitData: CreateWorkoutSplitData) => {
   }
 };
 
-interface UpdateWorkoutSplitData {
-  workoutSplitId: Types.ObjectId;
-  newWorkoutSplitName?: string;
-  newWorkouts?: Partial<IWorkout>[];
-}
+// interface UpdateWorkoutSplitData {
+//   workoutSplitId: Types.ObjectId;
+//   newWorkoutSplitName?: string;
+//   newWorkouts?: Partial<IWorkout>[];
+// }
 
-export const updateWorkoutSplit = async (
-  updateData: UpdateWorkoutSplitData
-) => {
-  const { workoutSplitId, newWorkoutSplitName, newWorkouts } = updateData;
+// export const updateWorkoutSplit = async (
+//   updateData: UpdateWorkoutSplitData
+// ) => {
+//   const { workoutSplitId, newWorkoutSplitName, newWorkouts } = updateData;
 
-  const workoutSplit = await WorkoutSplitModel.findById(workoutSplitId).exec();
+//   const workoutSplit = await WorkoutSplitModel.findById(workoutSplitId).exec();
 
-  if (!workoutSplit) {
-    throw createHttpError(404, "Workout Split Not Found");
-  }
+//   if (!workoutSplit) {
+//     throw createHttpError(404, "Workout Split Not Found");
+//   }
 
-  if (newWorkoutSplitName) {
-    workoutSplit.name = newWorkoutSplitName;
-  }
+//   if (newWorkoutSplitName) {
+//     workoutSplit.name = newWorkoutSplitName;
+//   }
 
-  if (newWorkouts && Array.isArray(newWorkouts)) {
-    const updatedWorkoutIds = await Promise.all(
-      newWorkouts.map(async (workout) => {
-        if (workout._id) {
-          const { _id, workoutName, exercises, day, notes } = workout;
+//   if (newWorkouts && Array.isArray(newWorkouts)) {
+//     const updatedWorkoutIds = await Promise.all(
+//       newWorkouts.map(async (workout) => {
+//         if (workout._id) {
+//           const { _id, workoutName, exercises, day, notes } = workout;
 
-          const updateWorkoutData = {
-            workoutId: _id,
-            newWorkoutName: workoutName,
-            newExercises: exercises
-              ? ((await Promise.all(
-                  exercises.map(async (exerciseId) => {
-                    const exercise = await ExerciseModel.findById(
-                      exerciseId
-                    ).exec();
+//           const updateWorkoutData = {
+//             workoutId: _id,
+//             newWorkoutName: workoutName,
+//             newExercises: exercises
+//               ? ((await Promise.all(
+//                   exercises.map(async (exerciseId) => {
+//                     const exercise = await ExerciseModel.findById(
+//                       exerciseId
+//                     ).exec();
 
-                    if (!exercise) {
-                      throw createHttpError(404, "Exercise Not Found");
-                    }
-                    return exercise;
-                  })
-                )) as IExercise[])
-              : undefined,
-            newDay: day,
-            newNotes: notes,
-          };
+//                     if (!exercise) {
+//                       throw createHttpError(404, "Exercise Not Found");
+//                     }
+//                     return exercise;
+//                   })
+//                 )) as IExercise[])
+//               : undefined,
+//             newDay: day,
+//             newNotes: notes,
+//           };
 
-          const updatedWorkout = await updateWorkout(updateWorkoutData);
+//           const updatedWorkout = await updateWorkout(updateWorkoutData);
 
-          if (updatedWorkout) {
-            return updatedWorkout._id;
-          } else {
-            const { workoutName, exercises, day, notes } = workout;
+//           if (updatedWorkout) {
+//             return updatedWorkout._id;
+//           } else {
+//             const { workoutName, exercises, day, notes } = workout;
 
-            if (
-              !workoutName ||
-              !exercises ||
-              !day ||
-              !Array.isArray(exercises)
-            ) {
-              throw createHttpError(400, "Missing or Invalid Workout Fields");
-            }
+//             if (
+//               !workoutName ||
+//               !exercises ||
+//               !day ||
+//               !Array.isArray(exercises)
+//             ) {
+//               throw createHttpError(400, "Missing or Invalid Workout Fields");
+//             }
 
-            const fullExercises = await Promise.all(
-              exercises.map(async (exerciseId) => {
-                const exercise = await ExerciseModel.findById(
-                  exerciseId
-                ).exec();
+//             const fullExercises = await Promise.all(
+//               exercises.map(async (exerciseId) => {
+//                 const exercise = await ExerciseModel.findById(
+//                   exerciseId
+//                 ).exec();
 
-                if (!exercise) {
-                  throw createHttpError(404, "Exercise Not Found");
-                }
-                return exercise;
-              })
-            );
+//                 if (!exercise) {
+//                   throw createHttpError(404, "Exercise Not Found");
+//                 }
+//                 return exercise;
+//               })
+//             );
 
-            const newWorkout = await createWorkout({
-              workoutName,
-              exercises: fullExercises,
-              day,
-              notes,
-            });
+//             const newWorkout = await createWorkout({
+//               workoutName,
+//               exercises: fullExercises,
+//               day,
+//               notes,
+//             });
 
-            if (newWorkout) {
-              return newWorkout._id;
-            }
-          }
-          return null;
-        }
-      })
-    );
+//             if (newWorkout) {
+//               return newWorkout._id;
+//             }
+//           }
+//           return null;
+//         }
+//       })
+//     );
 
-    workoutSplit.workouts = updatedWorkoutIds.filter(
-      (id) => id !== null
-    ) as Types.ObjectId[];
-  }
+//     workoutSplit.workouts = updatedWorkoutIds.filter(
+//       (id) => id !== null
+//     ) as Types.ObjectId[];
+//   }
 
-  const updatedWorkoutSplit = await workoutSplit.save();
-  return updatedWorkoutSplit;
-};
+//   const updatedWorkoutSplit = await workoutSplit.save();
+//   return updatedWorkoutSplit;
+// };

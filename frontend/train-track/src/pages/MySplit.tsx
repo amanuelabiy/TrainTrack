@@ -5,7 +5,7 @@ import SetWeeklySplit from "@/components/mysplit/SetWeeklySplit";
 
 function MySplit() {
   const workoutPlans = useSelector(
-    (state: RootState) => state.workoutPlanState.workoutPlans
+    (state: RootState) => state.workoutPlanState.workouts
   );
 
   return (

@@ -1,5 +1,4 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import {
   Layout,
@@ -12,8 +11,7 @@ import {
   Upcoming,
   Statistics,
 } from "./pages";
-
-const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+import CreateCustomSplitPage from "./pages/CreateCustomSplitPage";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +35,10 @@ const router = createBrowserRouter([
         element: <MySplit />,
       },
       {
+        path: "mysplit/create-custom-split",
+        element: <CreateCustomSplitPage />,
+      },
+      {
         path: "register",
         element: <Register />,
       },
@@ -57,10 +59,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return (
-    <GoogleOAuthProvider clientId={clientId}>
-      <RouterProvider router={router} />
-    </GoogleOAuthProvider>
-  );
+  return <RouterProvider router={router} />;
 }
 export default App;
