@@ -1,6 +1,7 @@
 import AddWorkoutBtn from "@/components/createcustomsplit/AddWorkoutBtn";
 
 import AddWorkoutCard from "@/components/createcustomsplit/AddWorkoutCard";
+import { Workout } from "@/types/workoutTypes";
 import { useState } from "react";
 
 function CreateCustomSplitPage() {
@@ -10,7 +11,9 @@ function CreateCustomSplitPage() {
     setShowAddWorkoutCard(true);
   };
 
-  const onAddWorkout = () => {};
+  const onAddWorkout = (workout: Workout) => {
+    console.log(workout);
+  };
 
   return (
     <div className="flex flex-col h-full">

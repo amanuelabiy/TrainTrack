@@ -46,6 +46,7 @@ export interface ProgressState {
 }
 
 export enum Day {
+  None = "",
   Monday = "Monday",
   Tuesday = "Tuesday",
   Wednesday = "Wednesday",

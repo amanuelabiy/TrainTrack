@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Exercise, Workout } from "@/types/workoutTypes";
+import { Day, Exercise, Workout } from "@/types/workoutTypes";
 import { useState } from "react";
 
 function AddWorkoutCard({
@@ -25,11 +25,14 @@ function AddWorkoutCard({
   onAddWorkout: (workout: Workout) => void;
 }) {
   const [workoutName, setWorkoutName] = useState("");
-  const [daysOfWeek, setDaysOfWeek] = useState("");
-  const [exercises, setExercises] = useState<Exercise>([]);
+  const [day, setDay] = useState(Day.None);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
 
   const handleAddExercise = () => {
-    setExercises([...exercises, { name: "", sets: 0, reps: 0 }]);
+    setExercises([
+      ...exercises,
+      { workoutName: "", name: "", sets: 0, reps: 0 },
+    ]);
   };
 
   const handleExerciseChange = (
@@ -42,6 +45,16 @@ function AddWorkoutCard({
     setExercises(newExercises);
   };
 
+  const handleSelectChange = (value: Day) => {
+    setDay(value);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const workout = { workoutName, exercises, day };
+    onAddWorkout(workout);
+  };
+
   return (
     <Card className="w-[350px]">
       <CardHeader>
@@ -49,7 +62,7 @@ function AddWorkoutCard({
         <CardDescription>Enter your workout details below.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="name">Workout Name</Label>
@@ -61,8 +74,8 @@ function AddWorkoutCard({
               />
             </div>
             <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Days Of Week</Label>
-              <Select>
+              <Label htmlFor="framework">Day Of The Week</Label>
+              <Select onValueChange={handleSelectChange}>
                 <SelectTrigger id="framework">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
