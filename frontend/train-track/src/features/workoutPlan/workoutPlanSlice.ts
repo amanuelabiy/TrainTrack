@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { WorkoutPlanState, WorkoutPlan, Workout } from "@/types/workoutTypes";
+import { WorkoutPlanState, Workout } from "@/types/workoutTypes";
 
 const initialState: WorkoutPlanState = {
   workouts: [],

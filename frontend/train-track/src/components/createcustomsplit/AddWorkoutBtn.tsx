@@ -1,8 +1,15 @@
 import { Button } from "../ui/button";
 
-function AddWorkoutBtn() {
+interface AddWorkoutBtnProps {
+  handleWorkoutClick: () => void;
+}
+
+function AddWorkoutBtn({ handleWorkoutClick }: AddWorkoutBtnProps) {
   return (
-    <Button className="bg-green-500 hover:bg-green-700 text-white w-full p-6">
+    <Button
+      onClick={handleWorkoutClick}
+      className="bg-primary hover:bg-green-700 text-white w-full p-6"
+    >
       Add Workout
     </Button>
   );

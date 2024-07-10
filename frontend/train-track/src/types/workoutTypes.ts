@@ -1,14 +1,22 @@
 export interface Workout {
-  name: string;
-  sets: number;
-  reps: number;
-  completed: boolean;
+  workoutName: string;
+  exercises: Exercise[];
+  day: Day;
+  notes?: string;
 }
 
 export interface WorkoutState {
   workouts: Workout[];
   loading: boolean;
   error: string | null;
+}
+
+export interface Exercise {
+  workoutName: string;
+  name: string;
+  sets: number;
+  reps: number;
+  note?: string;
 }
 
 export interface WorkoutPlan {
@@ -35,4 +43,14 @@ export interface ProgressState {
   progressData: ProgressRecord[];
   loading: boolean;
   error: string | null;
+}
+
+export enum Day {
+  Monday = "Monday",
+  Tuesday = "Tuesday",
+  Wednesday = "Wednesday",
+  Thursday = "Thursday",
+  Friday = "Friday",
+  Saturday = "Saturday",
+  Sunday = "Sunday",
 }

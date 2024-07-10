@@ -10,7 +10,7 @@ function SetWeeklySplit() {
         </p>
       </div>
       <div className="w-full md:w-1/4 flex justify-center md:justify-end items-center">
-        <Button className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-300 w-full md:w-auto">
+        <Button className="bg-primary text-white px-6 py-3 rounded-md hover:bg-blue-300 w-full md:w-auto">
           Set Weekly Split
         </Button>
       </div>

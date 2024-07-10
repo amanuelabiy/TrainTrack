@@ -1,13 +1,24 @@
 import AddWorkoutBtn from "@/components/createcustomsplit/AddWorkoutBtn";
 
 import AddWorkoutCard from "@/components/createcustomsplit/AddWorkoutCard";
+import { useState } from "react";
 
 function CreateCustomSplitPage() {
+  const [showAddWorkoutCard, setShowAddWorkoutCard] = useState(false);
+
+  const handleAddWorkoutClick = () => {
+    setShowAddWorkoutCard(true);
+  };
+
+  const onAddWorkout = () => {};
+
   return (
     <div className="flex flex-col h-full">
-      <AddWorkoutCard />
+      {/* <AddWorkoutCard /> */}
+
+      {showAddWorkoutCard && <AddWorkoutCard onAddWorkout={onAddWorkout} />}
       <div className="mt-auto mx-auto mb-10 ">
-        <AddWorkoutBtn />
+        <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
       </div>
     </div>
   );
