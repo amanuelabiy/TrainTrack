@@ -19,11 +19,15 @@ import {
 import { Day, Exercise, Workout } from "@/types/workoutTypes";
 import { useState } from "react";
 
+interface AddWorkoutCardProps {
+  onAddWorkout: (workout: Workout) => void;
+  handleCancelClick: () => void;
+}
+
 function AddWorkoutCard({
   onAddWorkout,
-}: {
-  onAddWorkout: (workout: Workout) => void;
-}) {
+  handleCancelClick,
+}: AddWorkoutCardProps) {
   const [workoutName, setWorkoutName] = useState("");
   const [day, setDay] = useState(Day.None);
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -31,7 +35,7 @@ function AddWorkoutCard({
   const handleAddExercise = () => {
     setExercises([
       ...exercises,
-      { workoutName: "", name: "", sets: 0, reps: 0 },
+      { workoutName: workoutName, name: "", sets: 0, reps: 0 },
     ]);
   };
 
@@ -52,17 +56,21 @@ function AddWorkoutCard({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const workout = { workoutName, exercises, day };
+
     onAddWorkout(workout);
   };
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[350px] flex flex-col">
       <CardHeader>
         <CardTitle>Create Workout</CardTitle>
         <CardDescription>Enter your workout details below.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={(e) => handleSubmit(e)}>
+      <CardContent className="flex-grow">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col h-full justify-between"
+        >
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="name">Workout Name</Label>
@@ -71,6 +79,7 @@ function AddWorkoutCard({
                 placeholder="Name of your workout"
                 value={workoutName}
                 onChange={(e) => setWorkoutName(e.target.value)}
+                autoComplete="off"
               />
             </div>
             <div className="flex flex-col space-y-1.5">
@@ -100,13 +109,14 @@ function AddWorkoutCard({
                   onChange={(e) =>
                     handleExerciseChange(index, "name", e.target.value)
                   }
+                  autoComplete="off"
                 />
                 <Label htmlFor={`exercise-sets-${index}`}>Sets</Label>
                 <Input
                   type="number"
                   id={`exercise-sets-${index}`}
                   placeholder="Sets"
-                  value={exercise.sets}
+                  value={exercise.sets >= 0 ? exercise.sets : 0}
                   onChange={(e) =>
                     handleExerciseChange(index, "sets", Number(e.target.value))
                   }
@@ -116,7 +126,7 @@ function AddWorkoutCard({
                   type="number"
                   id={`exercise-reps-${index}`}
                   placeholder="Reps"
-                  value={exercise.reps}
+                  value={exercise.reps >= 0 ? exercise.reps : 0}
                   onChange={(e) =>
                     handleExerciseChange(index, "reps", Number(e.target.value))
                   }
@@ -124,15 +134,20 @@ function AddWorkoutCard({
               </div>
             ))}
           </div>
-          <Button type="button" onClick={handleAddExercise} className="mt-4">
+          <Button className="mt-4" type="button" onClick={handleAddExercise}>
             Add Exercise
           </Button>
+          <CardFooter className="flex justify-between items-center mt-4">
+            <Button className="" variant="outline" onClick={handleCancelClick}>
+              Cancel
+            </Button>
+
+            <Button type="submit" className="mr-3">
+              Save Workout
+            </Button>
+          </CardFooter>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button type="submit">Save Workout</Button>
-      </CardFooter>
     </Card>
   );
 }

@@ -3,23 +3,46 @@ import AddWorkoutBtn from "@/components/createcustomsplit/AddWorkoutBtn";
 import AddWorkoutCard from "@/components/createcustomsplit/AddWorkoutCard";
 import { Workout } from "@/types/workoutTypes";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
+import { RootState } from "@/store";
+import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 
 function CreateCustomSplitPage() {
   const [showAddWorkoutCard, setShowAddWorkoutCard] = useState(false);
+  const dispatch = useDispatch();
+
+  const workouts = useSelector(
+    (state: RootState) => state.workoutPlanState.workouts
+  );
 
   const handleAddWorkoutClick = () => {
     setShowAddWorkoutCard(true);
   };
 
   const onAddWorkout = (workout: Workout) => {
-    console.log(workout);
+    dispatch(addWorkout(workout));
+    setShowAddWorkoutCard(false);
+    console.log(workouts);
+  };
+
+  const handleCancelClick = () => {
+    setShowAddWorkoutCard(false);
   };
 
   return (
     <div className="flex flex-col h-full">
-      {/* <AddWorkoutCard /> */}
-
-      {showAddWorkoutCard && <AddWorkoutCard onAddWorkout={onAddWorkout} />}
+      {workouts.map((workout, index) => (
+        <div key={index}>
+          <WorkoutCard workout={workout} />
+        </div>
+      ))}
+      {showAddWorkoutCard && (
+        <AddWorkoutCard
+          onAddWorkout={onAddWorkout}
+          handleCancelClick={handleCancelClick}
+        />
+      )}
       <div className="mt-auto mx-auto mb-10 ">
         <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
       </div>

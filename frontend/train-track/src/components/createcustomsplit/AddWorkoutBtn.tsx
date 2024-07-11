@@ -8,7 +8,7 @@ function AddWorkoutBtn({ handleWorkoutClick }: AddWorkoutBtnProps) {
   return (
     <Button
       onClick={handleWorkoutClick}
-      className="bg-primary hover:bg-green-700 text-white w-full p-6"
+      className="bg-primary text-white w-full p-6"
     >
       Add Workout
     </Button>

@@ -2,9 +2,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import CreateCustomSplit from "@/components/mysplit/CreateCustomSplit";
 import SetWeeklySplit from "@/components/mysplit/SetWeeklySplit";
+import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 
 function MySplit() {
   const workoutPlans = useSelector(
+    (state: RootState) => state.workoutPlanState.workouts
+  );
+
+  const workouts = useSelector(
     (state: RootState) => state.workoutPlanState.workouts
   );
 
@@ -17,6 +22,11 @@ function MySplit() {
           <SetWeeklySplit />
         </>
       )}
+      {workouts.map((workout, index) => (
+        <div key={index}>
+          <WorkoutCard workout={workout} />
+        </div>
+      ))}
     </div>
   );
 }
