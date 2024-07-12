@@ -1,5 +1,5 @@
+import SettingsDropdown from "../settings/SettingsDropdown";
 import NavLinks from "./NavLinks";
-import UserProfileBtn from "./UserProfileBtn";
 
 /*"hidden lg:block h-screen w-72 bg-primary-foreground */
 
@@ -10,7 +10,7 @@ function Navbar() {
         <div className="flex flex-col h-full bg-primary-foreground">
           <NavLinks />
         </div>
-        <UserProfileBtn />
+        <SettingsDropdown />
       </nav>
     </div>
   );

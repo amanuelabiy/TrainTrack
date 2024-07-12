@@ -3,16 +3,16 @@ import AddWorkoutBtn from "@/components/createcustomsplit/AddWorkoutBtn";
 import AddWorkoutCard from "@/components/createcustomsplit/AddWorkoutCard";
 import { Workout } from "@/types/workoutTypes";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
 import { RootState } from "@/store";
 import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 
 function CreateCustomSplitPage() {
   const [showAddWorkoutCard, setShowAddWorkoutCard] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const workouts = useSelector(
+  const workouts = useAppSelector(
     (state: RootState) => state.workoutPlanState.workouts
   );
 

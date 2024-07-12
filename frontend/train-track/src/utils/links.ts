@@ -9,5 +9,4 @@ export const links: Link[] = [
   { href: "mysplit", label: "mysplit" },
   { href: "statistics", label: "statistics" },
   { href: "history", label: "history" },
-  { href: "settings", label: "settings" },
 ];

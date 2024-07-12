@@ -10,9 +10,9 @@ function NavLinks() {
             to={link.href}
             key={link.label}
             className={({ isActive }) =>
-              `capitalize font-light tracking-wide block text-lg rounded-lg ${
-                isActive ? "bg-gray-200" : ""
-              } hover:bg-gray-200 p-2 m-0`
+              `capitalize font-primary tracking-wide block text-lg rounded-lg ${
+                isActive ? "bg-secondary" : ""
+              } hover:bg-secondary p-2 m-0`
             }
           >
             <span className="text-sm font-medium leading-normal">

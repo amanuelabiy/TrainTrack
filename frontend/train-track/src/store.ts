@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 
+import themeReducer from "./features/theme/themeSlice";
 import progressReducer from "./features/progress/progressSlice";
 import workoutPlanReducer from "./features/workoutPlan/workoutPlanSlice";
 
@@ -7,6 +8,7 @@ export const store = configureStore({
   reducer: {
     progressState: progressReducer,
     workoutPlanState: workoutPlanReducer,
+    themeState: themeReducer,
   },
 });
 
