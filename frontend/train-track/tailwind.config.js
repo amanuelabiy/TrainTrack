@@ -87,7 +87,7 @@ module.exports = {
         "28px": "28px",
       },
       fontFamily: {
-        lilitaOne: ["Lilita One", "sans-serif"],
+        robotoSlab: "Roboto Slab",
       },
       screens: {
         custom: "1255px",

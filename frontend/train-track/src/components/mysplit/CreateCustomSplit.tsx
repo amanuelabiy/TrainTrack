@@ -9,7 +9,7 @@ function CreateCustomSplit() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full border border-gray-300 rounded-lg p-6 mt-10">
+    <div className="flex flex-col md:flex-row w-full border border-border rounded-lg p-6 mt-10">
       <div className="w-3/4 flex flex-col justify-center">
         <h1 className="font-semibold hidden md:block">
           Create your own workout split
