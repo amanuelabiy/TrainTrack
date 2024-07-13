@@ -5,12 +5,6 @@ export interface Workout {
   notes?: string;
 }
 
-export interface WorkoutState {
-  workouts: Workout[];
-  loading: boolean;
-  error: string | null;
-}
-
 export interface Exercise {
   workoutName: string;
   name: string;
@@ -19,28 +13,33 @@ export interface Exercise {
   note?: string;
 }
 
-export interface WorkoutPlan {
+export type AllWorkoutReponse = {
+  data: Workout[];
+};
+
+export interface WorkoutResponse {
   _id: string;
+  workoutName: string;
+  exercises: ExerciseResponse[];
+  day: Day;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface ExerciseResponse {
+  _id: string;
+  workoutName: string;
   name: string;
-  description: string;
-  workouts: Workout[];
+  sets: number;
+  reps: number;
+  weight: number;
+  notes?: string;
+  __v: number;
 }
 
 export interface WorkoutPlanState {
   workouts: Workout[];
-  loading: boolean;
-  error: string | null;
-}
-
-export interface ProgressRecord {
-  data: string;
-  exercise: string;
-  weight: number;
-  reps: number;
-}
-
-export interface ProgressState {
-  progressData: ProgressRecord[];
   loading: boolean;
   error: string | null;
 }

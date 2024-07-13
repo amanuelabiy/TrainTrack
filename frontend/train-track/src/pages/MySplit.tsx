@@ -1,28 +1,55 @@
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
 import CreateCustomSplit from "@/components/mysplit/CreateCustomSplit";
 import SetWeeklySplit from "@/components/mysplit/SetWeeklySplit";
-import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 import CustomizeWorkoutSplit from "@/components/mysplit/CustomizeWorkoutSplit";
+import { useEffect, useState } from "react";
+import {
+  type LoaderFunction,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import { type AllWorkoutReponse } from "@/types/workoutTypes";
+import { customFetch } from "@/network/customFetch";
+
+const url = "/workouts";
+
+export const loader: LoaderFunction = async (): Promise<AllWorkoutReponse> => {
+  const response = await customFetch.get<AllWorkoutReponse>(url);
+
+  return response.data;
+};
 
 function MySplit() {
-  const workoutPlans = useSelector(
-    (state: RootState) => state.workoutPlanState.workouts
-  );
+  const [editSplit, setEditSplit] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const workouts = useSelector(
-    (state: RootState) => state.workoutPlanState.workouts
-  );
+  const handlePageSwitch = (path: string) => {
+    setEditSplit(true);
+    navigate(path);
+  };
+
+  useEffect(() => {
+    setEditSplit(false);
+    const editSplitPath = ["/mysplit/create-custom-split"];
+
+    if (editSplitPath.includes(location.pathname)) {
+      setEditSplit(true);
+    }
+  }, [location]);
 
   return (
     <div>
       <h1 className="text-3xl font-semibold tracking-wide">My Workout Split</h1>
-      {workoutPlans.length === 0 && (
+
+      {!editSplit ? (
         <>
-          <CreateCustomSplit />
+          <CreateCustomSplit handlePageSwitch={handlePageSwitch} />
           <SetWeeklySplit />
-          <CustomizeWorkoutSplit />
+          <CustomizeWorkoutSplit handlePageSwitch={handlePageSwitch} />
         </>
+      ) : (
+        <Outlet />
       )}
     </div>
   );

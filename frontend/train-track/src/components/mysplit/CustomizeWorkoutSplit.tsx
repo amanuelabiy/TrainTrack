@@ -1,7 +1,14 @@
+import { Separator } from "../ui/separator";
 import AddExercises from "./AddExercises";
 import ViewWeeklySplit from "./ViewWeeklySplit";
 
-function CustomizeWorkoutSplit() {
+interface CustomizeWorkoutSplitProps {
+  handlePageSwitch: (path: string) => void;
+}
+
+function CustomizeWorkoutSplit({
+  handlePageSwitch,
+}: CustomizeWorkoutSplitProps) {
   return (
     <main className="mt-14">
       <h1 className="text-4xl  capitalize tracking-wider font-extrabold">
@@ -11,9 +18,10 @@ function CustomizeWorkoutSplit() {
         Add exercises, sets, and repetitions, with included tools to customize
         and view your entire weekly workout routine.
       </p>
+      <Separator className="mt-5" />
       <div className="flex flex-col sm:flex-row mt-[115px] gap-10 items-center justify-center w-full max-w-screen-lg mx-auto">
         <AddExercises />
-        <ViewWeeklySplit />
+        <ViewWeeklySplit handlePageSwitch={handlePageSwitch} />
       </div>
     </main>
   );

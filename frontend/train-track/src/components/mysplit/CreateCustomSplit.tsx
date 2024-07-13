@@ -1,13 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
-function CreateCustomSplit() {
-  const navigate = useNavigate();
+interface CreateCustomSplitProps {
+  handlePageSwitch: (path: string) => void;
+}
 
-  const handleCreateSplit = () => {
-    navigate("create-custom-split");
-  };
-
+function CreateCustomSplit({ handlePageSwitch }: CreateCustomSplitProps) {
   return (
     <div className="flex flex-col md:flex-row w-full border border-border rounded-lg p-6 mt-10">
       <div className="w-3/4 flex flex-col justify-center">
@@ -21,7 +18,7 @@ function CreateCustomSplit() {
       <div className="w-full md:w-1/4 flex justify-center md:justify-end items-center">
         <Button
           className="bg-primary text-white px-6 py-3 rounded-md hover:bg-blue-300 w-full md:w-auto"
-          onClick={handleCreateSplit}
+          onClick={() => handlePageSwitch("create-custom-split")}
         >
           Create Custom Split
         </Button>

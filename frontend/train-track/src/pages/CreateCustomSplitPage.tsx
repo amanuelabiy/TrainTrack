@@ -1,20 +1,27 @@
 import AddWorkoutBtn from "@/components/createcustomsplit/AddWorkoutBtn";
 
 import AddWorkoutCard from "@/components/createcustomsplit/AddWorkoutCard";
-import { Workout } from "@/types/workoutTypes";
+import {
+  type AllWorkoutReponse,
+  Workout,
+  WorkoutResponse,
+} from "@/types/workoutTypes";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
 import { RootState } from "@/store";
 import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
+import { useLoaderData } from "react-router-dom";
 
 function CreateCustomSplitPage() {
   const [showAddWorkoutCard, setShowAddWorkoutCard] = useState(false);
   const dispatch = useAppDispatch();
 
-  const workouts = useAppSelector(
-    (state: RootState) => state.workoutPlanState.workouts
-  );
+  const workouts = useLoaderData() as WorkoutResponse[];
+
+  // const workouts = useAppSelector(
+  //   (state: RootState) => state.workoutPlanState.workouts
+  // );
 
   const handleAddWorkoutClick = () => {
     setShowAddWorkoutCard(true);
@@ -30,11 +37,19 @@ function CreateCustomSplitPage() {
     setShowAddWorkoutCard(false);
   };
 
+  const handleEditClick = () => {};
+
+  const handleDeleteClick = () => {};
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       {workouts.map((workout, index) => (
         <div key={index}>
-          <WorkoutCard workout={workout} />
+          <WorkoutCard
+            workout={workout}
+            handleEditClick={handleEditClick}
+            handleDeleteClick={handleDeleteClick}
+          />
         </div>
       ))}
       {showAddWorkoutCard && (
@@ -43,7 +58,7 @@ function CreateCustomSplitPage() {
           handleCancelClick={handleCancelClick}
         />
       )}
-      <div className="mt-auto mx-auto mb-10 ">
+      <div className="fixed bottom-10 left-1/2 transform">
         <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
       </div>
     </div>

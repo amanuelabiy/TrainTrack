@@ -12,9 +12,15 @@ import {
 
 interface WorkoutCardProps {
   workout: Workout;
+  handleEditClick: () => void;
+  handleDeleteClick: () => void;
 }
 
-function WorkoutCard({ workout }: WorkoutCardProps) {
+function WorkoutCard({
+  workout,
+  handleEditClick,
+  handleDeleteClick,
+}: WorkoutCardProps) {
   return (
     <Card className="max-w-[350px] max-h-[350px]">
       <CardHeader>
@@ -49,8 +55,10 @@ function WorkoutCard({ workout }: WorkoutCardProps) {
       </CardContent>
       <CardFooter>
         <div className="flex justify-end">
-          <Button variant="destructive">Delete</Button>
-          <Button className="w">
+          <Button variant="destructive" onClick={handleDeleteClick}>
+            Delete
+          </Button>
+          <Button className="" onClick={handleEditClick}>
             <Pencil size={16} className="mr-2" />
             Edit Workout
           </Button>
