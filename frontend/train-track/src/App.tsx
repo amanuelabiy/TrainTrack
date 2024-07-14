@@ -13,7 +13,7 @@ import {
 } from "./pages";
 import CreateCustomSplitPage from "./pages/CreateCustomSplitPage";
 
-import { loader as workoutsLoader } from "./pages/MySplit";
+import { loader as workoutsLoader } from "./pages/CreateCustomSplitPage";
 
 const router = createBrowserRouter([
   {
@@ -35,11 +35,11 @@ const router = createBrowserRouter([
       {
         path: "mysplit",
         element: <MySplit />,
-        loader: workoutsLoader,
         children: [
           {
             path: "create-custom-split",
             element: <CreateCustomSplitPage />,
+            loader: workoutsLoader,
           },
         ],
       },

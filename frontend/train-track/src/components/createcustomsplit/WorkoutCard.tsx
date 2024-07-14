@@ -1,4 +1,4 @@
-import { Workout } from "@/types/workoutTypes";
+import { type WorkoutResponse } from "@/types/workoutTypes";
 import { Button } from "../ui/button";
 import { Pencil, Dumbbell } from "lucide-react";
 import {
@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/card";
 
 interface WorkoutCardProps {
-  workout: Workout;
-  handleEditClick: () => void;
+  workout: WorkoutResponse;
+  handleEditClick: (workout: WorkoutResponse) => void;
   handleDeleteClick: () => void;
 }
 
@@ -58,7 +58,7 @@ function WorkoutCard({
           <Button variant="destructive" onClick={handleDeleteClick}>
             Delete
           </Button>
-          <Button className="" onClick={handleEditClick}>
+          <Button className="" onClick={() => handleEditClick(workout)}>
             <Pencil size={16} className="mr-2" />
             Edit Workout
           </Button>

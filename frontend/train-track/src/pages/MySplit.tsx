@@ -11,14 +11,6 @@ import {
 import { type AllWorkoutReponse } from "@/types/workoutTypes";
 import { customFetch } from "@/network/customFetch";
 
-const url = "/workouts";
-
-export const loader: LoaderFunction = async (): Promise<AllWorkoutReponse> => {
-  const response = await customFetch.get<AllWorkoutReponse>(url);
-
-  return response.data;
-};
-
 function MySplit() {
   const [editSplit, setEditSplit] = useState<boolean>(false);
   const navigate = useNavigate();

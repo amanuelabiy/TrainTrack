@@ -7,21 +7,30 @@ import {
   WorkoutResponse,
 } from "@/types/workoutTypes";
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
 import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
-import { RootState } from "@/store";
 import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 import { useLoaderData } from "react-router-dom";
+import { customFetch } from "@/network/customFetch";
+
+const url = "/workouts";
+
+export const loader: LoaderFunction = async (): Promise<AllWorkoutReponse> => {
+  const response = await customFetch.get(url);
+
+  return response.data;
+};
 
 function CreateCustomSplitPage() {
   const [showAddWorkoutCard, setShowAddWorkoutCard] = useState(false);
   const dispatch = useAppDispatch();
 
-  const workouts = useLoaderData() as WorkoutResponse[];
+  const workoutsData = useLoaderData() as WorkoutResponse[];
+  const [workouts, setWorkouts] = useState(
+    workoutsData.map((workout) => ({ ...workout, isEditing: false }))
+  );
 
-  // const workouts = useAppSelector(
-  //   (state: RootState) => state.workoutPlanState.workouts
-  // );
+  console.log(workouts);
 
   const handleAddWorkoutClick = () => {
     setShowAddWorkoutCard(true);
@@ -30,19 +39,26 @@ function CreateCustomSplitPage() {
   const onAddWorkout = (workout: Workout) => {
     dispatch(addWorkout(workout));
     setShowAddWorkoutCard(false);
-    console.log(workouts);
+    console.log(workout);
   };
 
   const handleCancelClick = () => {
     setShowAddWorkoutCard(false);
   };
 
-  const handleEditClick = () => {};
+  const handleEditClick = (workout: WorkoutResponse) => {
+    const { _id } = workout;
+    setWorkouts((prevWorkouts) =>
+      prevWorkouts.map((workout) =>
+        workout._id === _id ? { ...workout, isEditing: true } : workout
+      )
+    );
+  };
 
   const handleDeleteClick = () => {};
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="mt-3 grid grid-cols-1 relative md:grid-cols-2 lg:grid-cols-3">
       {workouts.map((workout, index) => (
         <div key={index}>
           <WorkoutCard

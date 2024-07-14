@@ -14,7 +14,7 @@ export interface Exercise {
 }
 
 export type AllWorkoutReponse = {
-  data: Workout[];
+  data: WorkoutResponse[];
 };
 
 export interface WorkoutResponse {
@@ -22,6 +22,7 @@ export interface WorkoutResponse {
   workoutName: string;
   exercises: ExerciseResponse[];
   day: Day;
+  notes?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
