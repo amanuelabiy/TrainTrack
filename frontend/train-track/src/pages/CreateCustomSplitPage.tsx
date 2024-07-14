@@ -42,8 +42,16 @@ function CreateCustomSplitPage() {
     console.log(workout);
   };
 
-  const handleCancelClick = () => {
-    setShowAddWorkoutCard(false);
+  const handleCancelClick = (cancelWorkout: WorkoutResponse | undefined) => {
+    if (cancelWorkout) {
+      setWorkouts((prevWorkouts) =>
+        prevWorkouts.map((workout) =>
+          workout._id === cancelWorkout._id
+            ? { ...workout, ...cancelWorkout, isEditing: false }
+            : workout
+        )
+      );
+    }
   };
 
   const handleEditClick = (workout: WorkoutResponse) => {
@@ -57,18 +65,40 @@ function CreateCustomSplitPage() {
 
   const handleDeleteClick = () => {};
 
+  const handleSaveWorkout = (updatedWorkout: WorkoutResponse) => {
+    setWorkouts((prevWorkouts) =>
+      prevWorkouts.map((workout) =>
+        workout._id === updatedWorkout._id
+          ? { ...workout, ...updatedWorkout, isEditing: false }
+          : workout
+      )
+    );
+  };
+
   return (
     <div className="mt-3 grid grid-cols-1 relative md:grid-cols-2 lg:grid-cols-3">
-      {workouts.map((workout, index) => (
-        <div key={index}>
-          <WorkoutCard
+      {workouts.map((workout, index) =>
+        !workout.isEditing ? (
+          <>
+            <div key={index}>
+              <WorkoutCard
+                workout={workout}
+                handleEditClick={handleEditClick}
+                handleDeleteClick={handleDeleteClick}
+              />
+            </div>
+          </>
+        ) : (
+          <AddWorkoutCard
             workout={workout}
-            handleEditClick={handleEditClick}
-            handleDeleteClick={handleDeleteClick}
+            handleSaveWorkout={handleSaveWorkout}
+            onAddWorkout={onAddWorkout}
+            handleCancelClick={handleCancelClick}
           />
-        </div>
-      ))}
-      {showAddWorkoutCard && (
+        )
+      )}
+
+      {/* {showAddWorkoutCard && (
         <AddWorkoutCard
           onAddWorkout={onAddWorkout}
           handleCancelClick={handleCancelClick}
@@ -76,9 +106,35 @@ function CreateCustomSplitPage() {
       )}
       <div className="fixed bottom-10 left-1/2 transform">
         <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
-      </div>
+      </div> */}
     </div>
   );
 }
 
 export default CreateCustomSplitPage;
+
+// return (
+//     <div className="mt-3 grid grid-cols-1 relative md:grid-cols-2 lg:grid-cols-3">
+//       {workouts.map((workout, index) => (
+//         <div key={index}>
+//           <WorkoutCard
+//             workout={workout}
+//             handleEditClick={handleEditClick}
+//             handleDeleteClick={handleDeleteClick}
+//           />
+//         </div>
+//       ))}
+//       {showAddWorkoutCard && (
+//         <AddWorkoutCard
+//           onAddWorkout={onAddWorkout}
+//           handleCancelClick={handleCancelClick}
+//         />
+//       )}
+//       <div className="fixed bottom-10 left-1/2 transform">
+//         <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default CreateCustomSplitPage;

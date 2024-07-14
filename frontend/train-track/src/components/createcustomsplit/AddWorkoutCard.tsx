@@ -16,26 +16,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Day, Exercise, Workout } from "@/types/workoutTypes";
+import {
+  Day,
+  type Exercise,
+  Workout,
+  type WorkoutResponse,
+} from "@/types/workoutTypes";
 import { useState } from "react";
 
 interface AddWorkoutCardProps {
+  workout?: WorkoutResponse;
+  handleSaveWorkout: (updatedWorkout: WorkoutResponse) => void;
   onAddWorkout: (workout: Workout) => void;
-  handleCancelClick: () => void;
+  handleCancelClick: (cancelWorkout: WorkoutResponse | undefined) => void;
 }
 
 function AddWorkoutCard({
+  workout,
+  handleSaveWorkout,
   onAddWorkout,
   handleCancelClick,
 }: AddWorkoutCardProps) {
-  const [workoutName, setWorkoutName] = useState("");
-  const [day, setDay] = useState(Day.None);
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [workoutName, setWorkoutName] = useState(workout?.workoutName || "");
+  const [day, setDay] = useState(workout?.day || Day.None);
+  const [exercises, setExercises] = useState<Exercise[]>(
+    workout?.exercises || []
+  );
+
+  const { isEditing } = workout;
 
   const handleAddExercise = () => {
     setExercises([
       ...exercises,
-      { workoutName: workoutName, name: "", sets: 0, reps: 0 },
+      {
+        workoutName: workoutName,
+        name: "",
+        sets: 0,
+        reps: 0,
+        weight: 0,
+      },
     ]);
   };
 
@@ -63,7 +82,7 @@ function AddWorkoutCard({
   return (
     <Card className="w-[350px] flex flex-col">
       <CardHeader>
-        <CardTitle>Create Workout</CardTitle>
+        <CardTitle>{isEditing ? "Edit Workout" : "Create Workout"}</CardTitle>
         <CardDescription>Enter your workout details below.</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
@@ -86,7 +105,9 @@ function AddWorkoutCard({
               <Label htmlFor="framework">Day Of The Week</Label>
               <Select onValueChange={handleSelectChange}>
                 <SelectTrigger id="framework">
-                  <SelectValue placeholder="Select" />
+                  <SelectValue
+                    placeholder={day === Day.None ? "Select" : day}
+                  />
                 </SelectTrigger>
                 <SelectContent position="popper">
                   <SelectItem value="Sunday">Sunday</SelectItem>
@@ -138,7 +159,11 @@ function AddWorkoutCard({
             Add Exercise
           </Button>
           <CardFooter className="flex justify-between items-center mt-4">
-            <Button className="" variant="outline" onClick={handleCancelClick}>
+            <Button
+              className=""
+              variant="outline"
+              onClick={() => handleCancelClick(workout)}
+            >
               Cancel
             </Button>
 

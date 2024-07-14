@@ -6,11 +6,14 @@ export interface Workout {
 }
 
 export interface Exercise {
+  _id?: string;
   workoutName: string;
   name: string;
   sets: number;
   reps: number;
-  note?: string;
+  weight: number;
+  notes?: string;
+  __v?: number;
 }
 
 export type AllWorkoutReponse = {
@@ -20,23 +23,13 @@ export type AllWorkoutReponse = {
 export interface WorkoutResponse {
   _id: string;
   workoutName: string;
-  exercises: ExerciseResponse[];
+  exercises: Exercise[];
   day: Day;
   notes?: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
-}
-
-export interface ExerciseResponse {
-  _id: string;
-  workoutName: string;
-  name: string;
-  sets: number;
-  reps: number;
-  weight: number;
-  notes?: string;
-  __v: number;
+  isEditing?: boolean;
 }
 
 export interface WorkoutPlanState {
