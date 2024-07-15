@@ -27,7 +27,7 @@ import { useState } from "react";
 interface AddWorkoutCardProps {
   workout?: WorkoutResponse;
   handleSaveWorkout: (updatedWorkout: WorkoutResponse) => void;
-  onAddWorkout: (workout: Workout) => void;
+  onAddWorkout: (newWorkout: Workout) => void;
   handleCancelClick: (cancelWorkout: WorkoutResponse | undefined) => void;
 }
 

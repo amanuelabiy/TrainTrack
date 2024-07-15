@@ -13,7 +13,7 @@ import {
 interface WorkoutCardProps {
   workout: WorkoutResponse;
   handleEditClick: (workout: WorkoutResponse) => void;
-  handleDeleteClick: () => void;
+  handleDeleteClick: (workout: WorkoutResponse) => void;
 }
 
 function WorkoutCard({
@@ -55,7 +55,10 @@ function WorkoutCard({
       </CardContent>
       <CardFooter>
         <div className="flex justify-end">
-          <Button variant="destructive" onClick={handleDeleteClick}>
+          <Button
+            variant="destructive"
+            onClick={() => handleDeleteClick(workout)}
+          >
             Delete
           </Button>
           <Button className="" onClick={() => handleEditClick(workout)}>

@@ -36,3 +36,28 @@ export async function createWorkout(
   });
   return response.json();
 }
+
+export async function updateWorkout(
+  workout: WorkoutResponse
+): Promise<WorkoutResponse> {
+  const { _id } = workout;
+  const response = await fetchData(`${productionUrl}/workouts/${_id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(workout),
+  });
+  return response.json();
+}
+
+export async function deleteWorkout(
+  workout: WorkoutResponse
+): Promise<WorkoutResponse> {
+  const { _id } = workout;
+  const response = await fetchData(`${productionUrl}/workouts/${_id}`, {
+    method: "DELETE",
+  });
+
+  return response.json();
+}

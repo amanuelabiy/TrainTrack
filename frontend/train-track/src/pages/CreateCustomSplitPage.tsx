@@ -11,7 +11,6 @@ import { useAppDispatch } from "@/hooks";
 import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
 import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 import { useLoaderData } from "react-router-dom";
-import { customFetch } from "@/network/customFetch";
 // import { updateWorkout } from "@/network/workout_api";
 import * as WorkoutsApi from "@/network/workout_api";
 
@@ -36,11 +35,18 @@ function CreateCustomSplitPage() {
     setShowAddWorkoutCard(true);
   };
 
-  const onAddWorkout = (workout: Workout) => {
-    dispatch(addWorkout(workout));
-    setShowAddWorkoutCard(false);
-    WorkoutsApi.createWorkout(workout);
-    console.log(workout);
+  const onAddWorkout = async (newWorkout: Workout) => {
+    try {
+      const response = await WorkoutsApi.createWorkout(newWorkout);
+      dispatch(addWorkout(response));
+      setWorkouts((prevWorkouts) => [
+        ...prevWorkouts,
+        { ...response, isEditing: false },
+      ]);
+      setShowAddWorkoutCard(false);
+    } catch (error) {
+      console.error("Error adding workout", error);
+    }
   };
 
   const handleCancelClick = (cancelWorkout: WorkoutResponse | undefined) => {
@@ -53,9 +59,10 @@ function CreateCustomSplitPage() {
         )
       );
     }
+    setShowAddWorkoutCard(false);
   };
 
-  const handleEditClick = (workout: WorkoutResponse) => {
+  const handleEditClick = async (workout: WorkoutResponse) => {
     const { _id } = workout;
     setWorkouts((prevWorkouts) =>
       prevWorkouts.map((workout) =>
@@ -64,18 +71,30 @@ function CreateCustomSplitPage() {
     );
   };
 
-  const handleDeleteClick = () => {};
+  const handleDeleteClick = async (workoutForDeletion: WorkoutResponse) => {
+    try {
+      const response = await WorkoutsApi.deleteWorkout(workoutForDeletion);
+      setWorkouts((prevWorkouts) =>
+        prevWorkouts.filter((workout) => workout._id !== workoutForDeletion._id)
+      );
+    } catch (error) {
+      console.error("Error deleting workout", error);
+    }
+  };
 
-  const handleSaveWorkout = (updatedWorkout: WorkoutResponse) => {
-    setWorkouts((prevWorkouts) =>
-      prevWorkouts.map((workout) =>
-        workout._id === updatedWorkout._id
-          ? { ...workout, ...updatedWorkout, isEditing: false }
-          : workout
-      )
-    );
-
-    // console.log("Response Data: ", updateWorkout(updatedWorkout));
+  const handleSaveWorkout = async (updatedWorkout: WorkoutResponse) => {
+    try {
+      const response = await WorkoutsApi.updateWorkout(updatedWorkout);
+      setWorkouts((prevWorkouts) =>
+        prevWorkouts.map((workout) =>
+          workout._id === updatedWorkout._id
+            ? { ...workout, ...updatedWorkout, isEditing: false }
+            : workout
+        )
+      );
+    } catch (error) {
+      console.error("Error updating workout", error);
+    }
   };
 
   return (
