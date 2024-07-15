@@ -71,16 +71,17 @@ export const getWorkouts = async () => {
 };
 
 interface UpdateWorkoutData {
-  workoutId: Types.ObjectId;
-  newWorkoutName?: string;
-  newExercises?: Partial<IExercise>[];
-  newDay?: Day;
-  newNotes?: string;
+  workoutName?: string;
+  exercises?: Partial<IExercise>[];
+  day?: Day;
+  notes?: string;
 }
 
-export const updateWorkout = async (updateData: UpdateWorkoutData) => {
-  const { workoutId, newWorkoutName, newExercises, newNotes, newDay } =
-    updateData;
+export const updateWorkout = async (
+  workoutId: Types.ObjectId,
+  updateData: UpdateWorkoutData
+) => {
+  const { workoutName, exercises, notes, day } = updateData;
 
   const workout = await WorkoutModel.findById(workoutId).exec();
 
@@ -88,21 +89,21 @@ export const updateWorkout = async (updateData: UpdateWorkoutData) => {
     throw createHttpError(404, "Workout Not Found");
   }
 
-  if (newWorkoutName) {
-    workout.workoutName = newWorkoutName;
+  if (workoutName !== undefined) {
+    workout.workoutName = workoutName;
   }
 
-  if (newNotes) {
-    workout.notes = newNotes;
+  if (notes !== undefined) {
+    workout.notes = notes;
   }
 
-  if (newDay) {
-    workout.day = newDay;
+  if (day !== undefined) {
+    workout.day = day;
   }
 
-  if (newExercises && Array.isArray(newExercises)) {
+  if (exercises && Array.isArray(exercises)) {
     const updatedExerciseIds = await Promise.all(
-      newExercises.map(async (exercise) => {
+      exercises.map(async (exercise) => {
         if (exercise._id) {
           const updatedExercise = await updateExercise(
             exercise._id as Types.ObjectId,

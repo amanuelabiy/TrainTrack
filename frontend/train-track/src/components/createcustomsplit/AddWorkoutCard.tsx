@@ -42,8 +42,9 @@ function AddWorkoutCard({
   const [exercises, setExercises] = useState<Exercise[]>(
     workout?.exercises || []
   );
+  const [notes, setNotes] = useState(workout?.notes || "");
 
-  const { isEditing } = workout;
+  const { isEditing = false } = workout || {};
 
   const handleAddExercise = () => {
     setExercises([
@@ -54,6 +55,7 @@ function AddWorkoutCard({
         sets: 0,
         reps: 0,
         weight: 0,
+        notes: "",
       },
     ]);
   };
@@ -72,11 +74,32 @@ function AddWorkoutCard({
     setDay(value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const workout = { workoutName, exercises, day };
+    const workout = { workoutName, exercises, day, notes };
 
     onAddWorkout(workout);
+  };
+
+  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (workout) {
+      const { _id, __v, createdAt, updatedAt } = workout;
+      const updatedWorkout = {
+        _id,
+        workoutName,
+        exercises,
+        day,
+        notes,
+        __v,
+        createdAt,
+        updatedAt,
+      };
+
+      handleSaveWorkout(updatedWorkout);
+    } else {
+      console.log("No workout is avaliable");
+    }
   };
 
   return (
@@ -87,7 +110,7 @@ function AddWorkoutCard({
       </CardHeader>
       <CardContent className="flex-grow">
         <form
-          onSubmit={handleSubmit}
+          onSubmit={workout ? handleEditSubmit : handleAddSubmit}
           className="flex flex-col h-full justify-between"
         >
           <div className="grid w-full items-center gap-4">
@@ -126,7 +149,7 @@ function AddWorkoutCard({
                 <Input
                   id={`exercise-name-${index}`}
                   placeholder="Exercise Name"
-                  value={exercise.name}
+                  value={exercise.name || ""}
                   onChange={(e) =>
                     handleExerciseChange(index, "name", e.target.value)
                   }
@@ -152,12 +175,33 @@ function AddWorkoutCard({
                     handleExerciseChange(index, "reps", Number(e.target.value))
                   }
                 />
+                <Label htmlFor={`exercise-notes-${index}`}>Notes</Label>
+                <Input
+                  id={`exercise-notes-${index}`}
+                  placeholder="Enter Exercise Notes"
+                  value={exercise.notes || ""}
+                  onChange={(e) =>
+                    handleExerciseChange(index, "notes", e.target.value)
+                  }
+                  autoComplete="off"
+                />
               </div>
             ))}
           </div>
           <Button className="mt-4" type="button" onClick={handleAddExercise}>
             Add Exercise
           </Button>
+          <div>
+            <label htmlFor="notes">Notes</label>
+            <textarea
+              id="notes"
+              className="mt-1 block w-full border-border shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-black"
+              rows={3}
+              placeholder={notes ? notes : "Enter your notes here"}
+              value={notes || ""}
+              onChange={(e) => setNotes(e.target.value)}
+            ></textarea>
+          </div>
           <CardFooter className="flex justify-between items-center mt-4">
             <Button
               className=""
@@ -166,10 +210,19 @@ function AddWorkoutCard({
             >
               Cancel
             </Button>
-
-            <Button type="submit" className="mr-3">
-              Save Workout
-            </Button>
+            {workout ? (
+              <>
+                <Button type="submit" className="mr-3">
+                  Save Workout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button type="submit" className="mr-3">
+                  Add Workout
+                </Button>
+              </>
+            )}
           </CardFooter>
         </form>
       </CardContent>

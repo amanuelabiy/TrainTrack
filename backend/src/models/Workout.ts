@@ -7,6 +7,10 @@ interface IWorkout {
   exercises: Types.ObjectId[];
   day: Day;
   notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v: number;
+  isEditing?: boolean;
 }
 
 const workoutSchema: Schema<IWorkout> = new Schema(

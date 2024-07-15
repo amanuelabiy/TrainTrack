@@ -76,10 +76,15 @@ interface UpdateWorkoutParams {
 }
 
 interface UpdateWorkoutBody {
+  _id?: string;
   workoutName?: string;
   exercises?: Partial<IExercise>[];
-  day: Day;
+  day?: Day;
   notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+  isEditing?: boolean;
 }
 
 export const updateWorkout: RequestHandler<
@@ -100,19 +105,32 @@ export const updateWorkout: RequestHandler<
       throw createHttpError(400, "Invalid Workout Id");
     }
 
-    if (!newWorkoutName && !newExercises && !newNotes && !newDay) {
-      throw createHttpError(400, "No valid fields to update");
+    const updateData: Partial<UpdateWorkoutBody> = {};
+    if (newWorkoutName !== undefined) updateData.workoutName = newWorkoutName;
+    if (newExercises !== undefined) updateData.exercises = newExercises;
+    if (newDay !== undefined) updateData.day = newDay;
+    if (newNotes !== undefined) updateData.notes = newNotes;
+
+    // if (!newWorkoutName && !newExercises && !newNotes && !newDay) {
+    //   throw createHttpError(400, "No valid fields to update");
+    // }
+
+    if (Object.keys(updateData).length === 0) {
+      throw createHttpError(400, "No valid feilds to update");
     }
 
-    const newUpdateData = {
-      workoutId: new mongoose.Types.ObjectId(workoutId),
-      newWorkoutName: newWorkoutName,
-      newExercises: newExercises,
-      newDay: newDay,
-      newNotes: newNotes,
-    };
+    // const newUpdateData = {
+    //   workoutId: new mongoose.Types.ObjectId(workoutId),
+    //   newWorkoutName: newWorkoutName,
+    //   newExercises: newExercises,
+    //   newDay: newDay,
+    //   newNotes: newNotes,
+    // };
 
-    const updatedWorkout = await workoutService.updateWorkout(newUpdateData);
+    const updatedWorkout = await workoutService.updateWorkout(
+      new mongoose.Types.ObjectId(workoutId),
+      updateData
+    );
 
     res.status(200).json(updatedWorkout);
   } catch (error) {

@@ -12,13 +12,13 @@ import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
 import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 import { useLoaderData } from "react-router-dom";
 import { customFetch } from "@/network/customFetch";
-
-const url = "/workouts";
+// import { updateWorkout } from "@/network/workout_api";
+import * as WorkoutsApi from "@/network/workout_api";
 
 export const loader: LoaderFunction = async (): Promise<AllWorkoutReponse> => {
-  const response = await customFetch.get(url);
+  const response = await WorkoutsApi.fetchWorkouts();
 
-  return response.data;
+  return response;
 };
 
 function CreateCustomSplitPage() {
@@ -39,6 +39,7 @@ function CreateCustomSplitPage() {
   const onAddWorkout = (workout: Workout) => {
     dispatch(addWorkout(workout));
     setShowAddWorkoutCard(false);
+    WorkoutsApi.createWorkout(workout);
     console.log(workout);
   };
 
@@ -73,68 +74,45 @@ function CreateCustomSplitPage() {
           : workout
       )
     );
+
+    // console.log("Response Data: ", updateWorkout(updatedWorkout));
   };
 
   return (
     <div className="mt-3 grid grid-cols-1 relative md:grid-cols-2 lg:grid-cols-3">
-      {workouts.map((workout, index) =>
+      {workouts.map((workout) =>
         !workout.isEditing ? (
-          <>
-            <div key={index}>
-              <WorkoutCard
-                workout={workout}
-                handleEditClick={handleEditClick}
-                handleDeleteClick={handleDeleteClick}
-              />
-            </div>
-          </>
+          <div key={workout._id}>
+            <WorkoutCard
+              workout={workout}
+              handleEditClick={handleEditClick}
+              handleDeleteClick={handleDeleteClick}
+            />
+          </div>
         ) : (
-          <AddWorkoutCard
-            workout={workout}
-            handleSaveWorkout={handleSaveWorkout}
-            onAddWorkout={onAddWorkout}
-            handleCancelClick={handleCancelClick}
-          />
+          <div key={workout._id}>
+            <AddWorkoutCard
+              workout={workout}
+              onAddWorkout={onAddWorkout}
+              handleSaveWorkout={handleSaveWorkout}
+              handleCancelClick={handleCancelClick}
+            />
+          </div>
         )
       )}
 
-      {/* {showAddWorkoutCard && (
+      {showAddWorkoutCard && (
         <AddWorkoutCard
           onAddWorkout={onAddWorkout}
+          handleSaveWorkout={handleSaveWorkout}
           handleCancelClick={handleCancelClick}
         />
       )}
       <div className="fixed bottom-10 left-1/2 transform">
         <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
-      </div> */}
+      </div>
     </div>
   );
 }
 
 export default CreateCustomSplitPage;
-
-// return (
-//     <div className="mt-3 grid grid-cols-1 relative md:grid-cols-2 lg:grid-cols-3">
-//       {workouts.map((workout, index) => (
-//         <div key={index}>
-//           <WorkoutCard
-//             workout={workout}
-//             handleEditClick={handleEditClick}
-//             handleDeleteClick={handleDeleteClick}
-//           />
-//         </div>
-//       ))}
-//       {showAddWorkoutCard && (
-//         <AddWorkoutCard
-//           onAddWorkout={onAddWorkout}
-//           handleCancelClick={handleCancelClick}
-//         />
-//       )}
-//       <div className="fixed bottom-10 left-1/2 transform">
-//         <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default CreateCustomSplitPage;

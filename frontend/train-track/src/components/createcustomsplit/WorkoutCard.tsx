@@ -22,11 +22,11 @@ function WorkoutCard({
   handleDeleteClick,
 }: WorkoutCardProps) {
   return (
-    <Card className="max-w-[350px] max-h-[350px]">
+    <Card className="max-w-[350px] max-h-[350px] overflow-hidden">
       <CardHeader>
         <Dumbbell />
         <CardTitle>{workout.workoutName}</CardTitle>
-        <CardDescription>{workout.notes}</CardDescription>
+        <CardDescription>{workout._id}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className=" flex items-center space-x-4 rounded-md border p-4">
