@@ -29,6 +29,7 @@ interface AddWorkoutCardProps {
   handleSaveWorkout: (updatedWorkout: WorkoutResponse) => void;
   onAddWorkout: (newWorkout: Workout) => void;
   handleCancelClick: (cancelWorkout: WorkoutResponse | undefined) => void;
+  handleNoWorkoutCancel: () => void;
 }
 
 function AddWorkoutCard({
@@ -36,6 +37,7 @@ function AddWorkoutCard({
   handleSaveWorkout,
   onAddWorkout,
   handleCancelClick,
+  handleNoWorkoutCancel,
 }: AddWorkoutCardProps) {
   const [workoutName, setWorkoutName] = useState(workout?.workoutName || "");
   const [day, setDay] = useState(workout?.day || Day.None);
@@ -56,14 +58,21 @@ function AddWorkoutCard({
         reps: 0,
         weight: 0,
         notes: "",
+        completed: false,
       },
     ]);
+  };
+
+  const handleDeleteExercise = (index: number) => {
+    setExercises((prevExercises) =>
+      prevExercises.filter((_, i) => i !== index)
+    );
   };
 
   const handleExerciseChange = (
     index: number,
     field: string,
-    value: string | number
+    value: string | number | boolean
   ) => {
     const newExercises = [...exercises];
     newExercises[index] = { ...newExercises[index], [field]: value };
@@ -102,13 +111,18 @@ function AddWorkoutCard({
     }
   };
 
+  const handleCheckBoxChange = () => {};
+
   return (
-    <Card className="w-[350px] flex flex-col">
+    <Card className="w-[350px] h-[480px] flex flex-col overflow-hidden">
       <CardHeader>
         <CardTitle>{isEditing ? "Edit Workout" : "Create Workout"}</CardTitle>
         <CardDescription>Enter your workout details below.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow">
+      <CardContent
+        className="flex-grow overflow-auto"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         <form
           onSubmit={workout ? handleEditSubmit : handleAddSubmit}
           className="flex flex-col h-full justify-between"
@@ -143,6 +157,7 @@ function AddWorkoutCard({
                 </SelectContent>
               </Select>
             </div>
+
             {exercises.map((exercise, index) => (
               <div key={index} className="flex flex-col space-y-1.5">
                 <Label htmlFor={`exercise-name-${index}`}>Exercise Name</Label>
@@ -185,6 +200,27 @@ function AddWorkoutCard({
                   }
                   autoComplete="off"
                 />
+                <div className="flex gap-3">
+                  <Input
+                    id={`exercise-completed-${index}`}
+                    type="checkbox"
+                    className="w-4 h-4"
+                    onChange={(e) =>
+                      handleExerciseChange(index, "completed", e.target.checked)
+                    }
+                  />
+                  <Label htmlFor={`exercise-completed-${index}`}>
+                    Mark as Complete
+                  </Label>
+                </div>
+                <Button
+                  className="w-full mx-auto"
+                  type="button"
+                  variant="destructive"
+                  onClick={() => handleDeleteExercise(index)}
+                >
+                  Delete Exercise
+                </Button>
               </div>
             ))}
           </div>
@@ -206,7 +242,11 @@ function AddWorkoutCard({
             <Button
               className=""
               variant="outline"
-              onClick={() => handleCancelClick(workout)}
+              onClick={
+                workout
+                  ? () => handleCancelClick(workout)
+                  : handleNoWorkoutCancel
+              }
             >
               Cancel
             </Button>

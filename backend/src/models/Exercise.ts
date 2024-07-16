@@ -14,6 +14,7 @@ interface IExercise {
   reps: number;
   weight?: number;
   notes?: string;
+  completed?: boolean;
 }
 
 const exerciseSchema: Schema<IExercise> = new Schema({
@@ -23,6 +24,7 @@ const exerciseSchema: Schema<IExercise> = new Schema({
   reps: { type: Number, require: true },
   weight: { type: Number, required: false },
   notes: { type: String, required: false },
+  completed: { type: Boolean, required: false },
 });
 
 type Exercise = InferSchemaType<typeof exerciseSchema>;

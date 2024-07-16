@@ -10,6 +10,7 @@ export const createExercise = async (exerciseData: IExercise) => {
   const reps = exerciseData.reps;
   const weight = exerciseData.weight;
   const notes = exerciseData.notes;
+  const completed = exerciseData.completed;
 
   try {
     if (!workoutName || !name || !sets || !reps) {
@@ -23,6 +24,7 @@ export const createExercise = async (exerciseData: IExercise) => {
       reps: reps,
       weight: weight,
       notes: notes,
+      completed: completed,
     });
 
     await newExercise.save();

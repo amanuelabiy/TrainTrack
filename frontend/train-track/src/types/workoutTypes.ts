@@ -13,6 +13,7 @@ export interface Exercise {
   reps: number;
   weight: number;
   notes?: string;
+  completed?: boolean;
   __v?: number;
 }
 
