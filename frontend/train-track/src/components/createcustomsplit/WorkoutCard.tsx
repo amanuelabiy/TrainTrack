@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "../ui/separator";
 import { Progress } from "../ui/progress";
+import { FaCheckCircle } from "react-icons/fa";
+import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
 interface WorkoutCardProps {
   workout: WorkoutResponse;
   handleEditClick: (workout: WorkoutResponse) => void;
@@ -22,32 +24,63 @@ function WorkoutCard({
   handleEditClick,
   handleDeleteClick,
 }: WorkoutCardProps) {
+  const formatDate = (mongoDate: string) => {
+    const date = new Date(mongoDate);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    };
+    const formattedDate = date.toLocaleDateString("en-US", options);
+
+    return formattedDate;
+  };
+
+  console.log(calcWorkoutCompletion(workout));
+
   return (
-    <Card className="w-[350px] h-[350px] overflow-hidden border-primary">
+    <Card className="w-[350px] h-[370px] overflow-hidden border-primary relative">
       <CardHeader>
         <Dumbbell />
         <div className="flex justify-between">
           <CardTitle>{workout.workoutName}</CardTitle>
           <CardDescription>{workout.day}</CardDescription>
         </div>
-        <Progress value={33} className="h-1" />
+        <Progress value={calcWorkoutCompletion(workout)} className="h-1" />
       </CardHeader>
 
-      <div className="relative flex-grow overflow-hidden">
+      <div className="relative flex-grow overflow-hidden h-[170px]">
         <div className="flex justify-between">
           <CardDescription className="ml-10">Name</CardDescription>
           <CardDescription className="mr-20">Sets</CardDescription>
         </div>
-        <CardContent className="overflow-auto h-full pr-4">
-          {workout.exercises.map((exercise, index) => (
-            <div className="flex justify-between">
-              <p className="tracking-widest">{exercise.name}</p>
-              <p className="mr-20">{exercise.sets}</p>
-            </div>
-          ))}
-        </CardContent>
+        <div className="overflow-hidden">
+          <CardContent className="relative h-full pr-4">
+            {workout.exercises.map((exercise, index) => (
+              <div key={index} className="flex justify-between">
+                <div className="flex-1">
+                  <p className="tracking-widest">{exercise.name}</p>
+                </div>
+                <div className="flex-1 text-right mr-[50px]">
+                  <p>{exercise.sets}</p>
+                </div>
+                <div className="w-[1.25rem] flex justify-center">
+                  {exercise.completed ? (
+                    <FaCheckCircle className="text-primary text-[1.25rem]" />
+                  ) : (
+                    <div className="text-[1.25rem]" />
+                  )}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </div>
       </div>
-      <CardFooter className="flex justify-end items-center mt-[3rem]">
+
+      <CardFooter className="grid grid-cols-2 gap-2">
         <Button
           variant="destructive"
           onClick={() => handleDeleteClick(workout)}
@@ -58,7 +91,11 @@ function WorkoutCard({
           <Pencil size={16} className="mr-2" />
           Edit Workout
         </Button>
-        <CardDescription className="ml-3 mb-3">Last Updated: </CardDescription>
+        <div className="mt-1">
+          <CardDescription className="whitespace-nowrap">
+            Last Updated: {formatDate(workout.updatedAt)}
+          </CardDescription>
+        </div>
       </CardFooter>
     </Card>
   );
@@ -66,25 +103,4 @@ function WorkoutCard({
 
 export default WorkoutCard;
 
-//  <div>
-//    {workout.exercises.map((name, index) => (
-//      <div
-//        key={index}
-//        className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-//      >
-//        <div className="space-y-1">
-//          {/* <p className="text-sm font-medium leading-none">{}</p>
-//                 <p className="text-sm text-muted-foreground">{}</p> */}
-//        </div>
-//      </div>
-//    ))}
-//  </div>;
-
-// <div className=" flex items-center space-x-4 rounded-md border p-4">
-//   <div className="flex-1 space-y-1">
-//     <p className="text-sm font-medium leading-none">Push Notifications</p>
-//     <p className="text-sm text-muted-foreground">
-//       Send notifications to device.
-//     </p>
-//   </div>
-// </div>;
+// flex justify-end items-center mt-auto

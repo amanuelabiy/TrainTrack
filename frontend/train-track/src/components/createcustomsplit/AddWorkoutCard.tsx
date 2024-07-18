@@ -205,6 +205,7 @@ function AddWorkoutCard({
                     id={`exercise-completed-${index}`}
                     type="checkbox"
                     className="w-4 h-4"
+                    checked={exercise.completed}
                     onChange={(e) =>
                       handleExerciseChange(index, "completed", e.target.checked)
                     }
