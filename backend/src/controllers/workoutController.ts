@@ -111,21 +111,9 @@ export const updateWorkout: RequestHandler<
     if (newDay !== undefined) updateData.day = newDay;
     if (newNotes !== undefined) updateData.notes = newNotes;
 
-    // if (!newWorkoutName && !newExercises && !newNotes && !newDay) {
-    //   throw createHttpError(400, "No valid fields to update");
-    // }
-
     if (Object.keys(updateData).length === 0) {
       throw createHttpError(400, "No valid feilds to update");
     }
-
-    // const newUpdateData = {
-    //   workoutId: new mongoose.Types.ObjectId(workoutId),
-    //   newWorkoutName: newWorkoutName,
-    //   newExercises: newExercises,
-    //   newDay: newDay,
-    //   newNotes: newNotes,
-    // };
 
     const updatedWorkout = await workoutService.updateWorkout(
       new mongoose.Types.ObjectId(workoutId),

@@ -4,6 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "rootDir": "./src",
+    "typeRoots": ["node_modules/@types", "@types"],
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -13,5 +14,8 @@
     "sourceMap": true,
     "noImplicitAny": true
   },
-  "include": ["src/**/*"]
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/**/*", "@types/**/*"]
 }

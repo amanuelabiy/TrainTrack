@@ -41,7 +41,7 @@ function WorkoutCard({
   console.log(calcWorkoutCompletion(workout));
 
   return (
-    <Card className="w-[350px] h-[370px] overflow-hidden border-primary relative">
+    <Card className="w-[350px] h-[370px] overflow-hidden border-primary relative mt-5">
       <CardHeader>
         <Dumbbell />
         <div className="flex justify-between">

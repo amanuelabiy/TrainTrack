@@ -39,6 +39,12 @@ function CreateCustomSplitPage() {
   };
 
   const onAddWorkout = async (newWorkout: Workout) => {
+    if (!newWorkout.workoutName) {
+      toast({
+        variant: "destructive",
+        title: "Workout Needs Name!",
+      });
+    }
     try {
       const response = await WorkoutsApi.createWorkout(newWorkout);
       dispatch(addWorkout(response));
@@ -52,6 +58,7 @@ function CreateCustomSplitPage() {
       });
       setShowAddWorkoutCard(false);
     } catch (error) {
+      toast({ variant: "destructive", title: "Error adding workout" });
       console.error("Error adding workout", error);
     }
   };
@@ -93,6 +100,7 @@ function CreateCustomSplitPage() {
       });
     } catch (error) {
       console.error("Error deleting workout", error);
+      toast({ variant: "destructive", title: "Error deleting workout" });
     }
   };
 
@@ -115,6 +123,13 @@ function CreateCustomSplitPage() {
     }
   };
 
+  const handleWorkoutFieldError = (error: string) => {
+    toast({
+      variant: "destructive",
+      title: `${error}`,
+    });
+  };
+
   return (
     <div className="mt-3 grid grid-cols-1 relative md:grid-cols-2 lg:grid-cols-3 gap-[2rem]">
       {workouts.map((workout) =>
@@ -134,6 +149,7 @@ function CreateCustomSplitPage() {
               handleSaveWorkout={handleSaveWorkout}
               handleCancelClick={handleCancelClick}
               handleNoWorkoutCancel={handleNoWorkoutCancel}
+              handleWorkoutFieldError={handleWorkoutFieldError}
             />
           </div>
         )
@@ -145,6 +161,7 @@ function CreateCustomSplitPage() {
           handleSaveWorkout={handleSaveWorkout}
           handleCancelClick={handleCancelClick}
           handleNoWorkoutCancel={handleNoWorkoutCancel}
+          handleWorkoutFieldError={handleWorkoutFieldError}
         />
       )}
       <Toaster />

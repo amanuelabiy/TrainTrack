@@ -30,6 +30,7 @@ interface AddWorkoutCardProps {
   onAddWorkout: (newWorkout: Workout) => void;
   handleCancelClick: (cancelWorkout: WorkoutResponse | undefined) => void;
   handleNoWorkoutCancel: () => void;
+  handleWorkoutFieldError: (error: string) => void;
 }
 
 function AddWorkoutCard({
@@ -38,6 +39,7 @@ function AddWorkoutCard({
   onAddWorkout,
   handleCancelClick,
   handleNoWorkoutCancel,
+  handleWorkoutFieldError,
 }: AddWorkoutCardProps) {
   const [workoutName, setWorkoutName] = useState(workout?.workoutName || "");
   const [day, setDay] = useState(workout?.day || Day.None);
@@ -87,7 +89,15 @@ function AddWorkoutCard({
     e.preventDefault();
     const workout = { workoutName, exercises, day, notes };
 
-    onAddWorkout(workout);
+    if (exercises.length <= 0) {
+      handleWorkoutFieldError("Invalid Number Of Exercises!");
+    } else if (!day) {
+      handleWorkoutFieldError("Missing Day Field!");
+    }
+
+    if (exercises.length > 0 && day) {
+      onAddWorkout(workout);
+    }
   };
 
   const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -105,13 +115,15 @@ function AddWorkoutCard({
         updatedAt,
       };
 
-      handleSaveWorkout(updatedWorkout);
-    } else {
-      console.log("No workout is avaliable");
+      for (const exercise of updatedWorkout.exercises) {
+        if (!exercise.name || !exercise.sets || !exercise.reps) {
+          handleWorkoutFieldError("Invalid Exercise Fields!");
+        } else {
+          handleSaveWorkout(updatedWorkout);
+        }
+      }
     }
   };
-
-  const handleCheckBoxChange = () => {};
 
   return (
     <Card className="w-[350px] h-[480px] flex flex-col overflow-hidden">

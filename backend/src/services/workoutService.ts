@@ -102,6 +102,10 @@ export const updateWorkout = async (
   }
 
   if (exercises && Array.isArray(exercises)) {
+    const currentExerciseIds = workout.exercises.map((exericse: any) =>
+      exericse._id.toString()
+    );
+
     const updatedExerciseIds = await Promise.all(
       exercises.map(async (exercise) => {
         if (exercise._id) {
@@ -110,19 +114,34 @@ export const updateWorkout = async (
             exercise
           );
           if (updatedExercise) {
-            return updatedExercise._id;
+            return updatedExercise._id.toString();
           }
         } else {
           const newExercise = await createExercise(exercise as IExercise);
 
-          return newExercise._id;
+          return newExercise._id.toString();
         }
         return null;
       })
     );
-    workout.exercises = updatedExerciseIds.filter(
+
+    const validUpdatedExerciseIds = updatedExerciseIds.filter(
       (id) => id !== null && id !== undefined
-    ) as Types.ObjectId[];
+    ) as string[];
+
+    const exercisesToDelete = currentExerciseIds.filter(
+      (id) => !validUpdatedExerciseIds.includes(id)
+    );
+
+    await Promise.all(
+      exercisesToDelete.map(async (id) => {
+        await deleteExercise(id as Types.ObjectId);
+      })
+    );
+
+    workout.exercises = validUpdatedExerciseIds.map(
+      (id) => new Types.ObjectId(id)
+    );
   }
 
   await workout.save();
