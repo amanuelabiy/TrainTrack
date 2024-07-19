@@ -13,6 +13,8 @@ import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
 import { useLoaderData } from "react-router-dom";
 // import { updateWorkout } from "@/network/workout_api";
 import * as WorkoutsApi from "@/network/workout_api";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
 
 export const loader: LoaderFunction = async (): Promise<AllWorkoutReponse> => {
   const response = await WorkoutsApi.fetchWorkouts();
@@ -23,6 +25,7 @@ export const loader: LoaderFunction = async (): Promise<AllWorkoutReponse> => {
 function CreateCustomSplitPage() {
   const [showAddWorkoutCard, setShowAddWorkoutCard] = useState(false);
   const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
   const workoutsData = useLoaderData() as WorkoutResponse[];
   const [workouts, setWorkouts] = useState(
@@ -43,6 +46,10 @@ function CreateCustomSplitPage() {
         ...prevWorkouts,
         { ...response, isEditing: false },
       ]);
+      toast({
+        variant: "success",
+        title: "Added Workout",
+      });
       setShowAddWorkoutCard(false);
     } catch (error) {
       console.error("Error adding workout", error);
@@ -80,6 +87,10 @@ function CreateCustomSplitPage() {
       setWorkouts((prevWorkouts) =>
         prevWorkouts.filter((workout) => workout._id !== workoutForDeletion._id)
       );
+      toast({
+        variant: "delete",
+        title: "Deleted Workout",
+      });
     } catch (error) {
       console.error("Error deleting workout", error);
     }
@@ -95,6 +106,10 @@ function CreateCustomSplitPage() {
             : workout
         )
       );
+      toast({
+        variant: "success",
+        title: "Saved Workout",
+      });
     } catch (error) {
       console.error("Error updating workout", error);
     }
@@ -132,6 +147,7 @@ function CreateCustomSplitPage() {
           handleNoWorkoutCancel={handleNoWorkoutCancel}
         />
       )}
+      <Toaster />
       <div className="fixed bottom-10 left-1/2 transform">
         <AddWorkoutBtn handleWorkoutClick={handleAddWorkoutClick} />
       </div>

@@ -232,7 +232,7 @@ function AddWorkoutCard({
             <label htmlFor="notes">Notes</label>
             <textarea
               id="notes"
-              className="mt-1 block w-full border-border shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-black"
+              className="mt-1 block w-full border-primary focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-black"
               rows={3}
               placeholder={notes ? notes : "Enter your notes here"}
               value={notes || ""}

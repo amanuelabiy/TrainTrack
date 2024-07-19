@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "../ui/separator";
 import { Progress } from "../ui/progress";
 import { FaCheckCircle } from "react-icons/fa";
 import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
@@ -102,5 +101,3 @@ function WorkoutCard({
 }
 
 export default WorkoutCard;
-
-// flex justify-end items-center mt-auto
