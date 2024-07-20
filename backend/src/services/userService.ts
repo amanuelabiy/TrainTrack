@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import UserModel from "../models/User";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
+import * as userService from "../services/userService";
 
 export const getAuthenticatedUser = async (
   authenticatedUserId: Types.ObjectId | undefined
@@ -60,4 +61,29 @@ export const signUp = async (signUpInfo: SignUpBodyInfo) => {
   });
 
   return newUser;
+};
+
+export const login = async (
+  username: string | undefined,
+  password: string | undefined
+) => {
+  if (!username || !password) {
+    throw createHttpError(400, "Login Parameters missing!");
+  }
+
+  const user = await UserModel.findOne({ username: username })
+    .select("+password +email")
+    .exec();
+
+  if (!user) {
+    throw createHttpError(401, "Invalid credentials");
+  }
+
+  const passwordMatch = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatch) {
+    throw createHttpError(401, "Invalid Credentials");
+  }
+
+  return user;
 };

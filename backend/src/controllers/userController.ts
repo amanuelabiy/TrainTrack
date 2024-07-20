@@ -62,24 +62,25 @@ export const login: RequestHandler<
   const password = req.body.password;
 
   try {
-    if (!username || !password) {
-      throw createHttpError(400, "Parameters missing");
-    }
+    // if (!username || !password) {
+    //   throw createHttpError(400, "Parameters missing");
+    // }
 
-    const user = await UserModel.findOne({ username: username })
-      .select("+password +email")
-      .exec();
+    // const user = await UserModel.findOne({ username: username })
+    //   .select("+password +email")
+    //   .exec();
 
-    if (!user) {
-      throw createHttpError(401, "Invalid credentials");
-    }
+    // if (!user) {
+    //   throw createHttpError(401, "Invalid credentials");
+    // }
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    // const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if (!passwordMatch) {
-      throw createHttpError(401, "Invalid credentials");
-    }
+    // if (!passwordMatch) {
+    //   throw createHttpError(401, "Invalid credentials");
+    // }
 
+    const user = await userService.login(username, password);
     req.session.userId = user._id;
     res.status(201).json(user);
   } catch (error) {
