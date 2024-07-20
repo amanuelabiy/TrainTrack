@@ -4,10 +4,10 @@ import {
   type AllWorkoutReponse,
 } from "@/types/workoutTypes";
 
-const productionUrl = "http://localhost:5000/api";
+export const productionUrl = "http://localhost:5000/api";
 
-async function fetchData(input: RequestInfo, init?: RequestInit) {
-  const response = await fetch(input, init);
+export async function fetchData(input: RequestInfo, init?: RequestInit) {
+  const response = await fetch(input, { ...init, credentials: "include" });
   if (response.ok) {
     return response;
   } else {

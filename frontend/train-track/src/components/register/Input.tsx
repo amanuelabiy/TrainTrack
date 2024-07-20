@@ -1,43 +1,31 @@
-import { InputProps } from "@/types/accountTypes";
+import { forwardRef, type Ref } from "react";
 
-// export interface InputProps {
-//   id: string;
-//   label: string;
-//   type: string;
-//   value: string;
-//   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-//   placeholder?: string;
-// }
-
-function Input({
-  id,
-  label,
-  type,
-  value,
-  onChange,
-  placeholder,
-  name,
-}: InputProps) {
-  return (
-    <div className="flex-col mt-9 ">
-      <label
-        className="block text-gray-700 text-sm font-bold mb-2"
-        htmlFor={id}
-      >
-        {label}
-      </label>
-      <input
-        type={type}
-        id={id}
-        name={name}
-        value={value}
-        onChange={onChange}
-        className="bg-gray-50 border border-gray-300  rounded-lg w-96 p-2.5"
-        placeholder={placeholder}
-        required
-      ></input>
-    </div>
-  );
+interface InputProps {
+  id: string;
+  label: string;
+  placeholder: string;
+  type?: string;
 }
+
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ id, label, ...props }, ref: Ref<HTMLInputElement>) => {
+    return (
+      <div className="flex-col mt-9">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor={id}
+        >
+          {label}
+        </label>
+        <input
+          id={id}
+          ref={ref}
+          {...props}
+          className="bg-gray-50 border border-gray-300 rounded-lg w-96 p-2.5 text-black"
+        />
+      </div>
+    );
+  }
+);
 
 export default Input;

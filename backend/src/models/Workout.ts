@@ -1,4 +1,4 @@
-import { InferSchemaType, Schema, Types, model } from "mongoose";
+import mongoose, { InferSchemaType, Schema, Types, model } from "mongoose";
 import { Day } from "../types/types";
 
 interface IWorkout {
@@ -11,6 +11,7 @@ interface IWorkout {
   updatedAt?: string;
   __v: number;
   isEditing?: boolean;
+  userId: mongoose.Types.ObjectId;
 }
 
 const workoutSchema: Schema<IWorkout> = new Schema(
@@ -21,6 +22,7 @@ const workoutSchema: Schema<IWorkout> = new Schema(
     ],
     day: { type: String, enum: Object.values(Day), required: true },
     notes: { type: String, required: false },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

@@ -41,6 +41,7 @@ export const signUp: RequestHandler<
   try {
     const newUser = await userService.signUp(signUpData);
 
+    req.session.userId = newUser._id;
     res.status(201).json(newUser);
   } catch (error) {
     next(error);
@@ -62,24 +63,6 @@ export const login: RequestHandler<
   const password = req.body.password;
 
   try {
-    // if (!username || !password) {
-    //   throw createHttpError(400, "Parameters missing");
-    // }
-
-    // const user = await UserModel.findOne({ username: username })
-    //   .select("+password +email")
-    //   .exec();
-
-    // if (!user) {
-    //   throw createHttpError(401, "Invalid credentials");
-    // }
-
-    // const passwordMatch = await bcrypt.compare(password, user.password);
-
-    // if (!passwordMatch) {
-    //   throw createHttpError(401, "Invalid credentials");
-    // }
-
     const user = await userService.login(username, password);
     req.session.userId = user._id;
     res.status(201).json(user);
@@ -89,6 +72,10 @@ export const login: RequestHandler<
 };
 
 export const logout: RequestHandler = (req, res, next) => {
+  if (!req.session) {
+    return res.sendStatus(200);
+  }
+
   req.session.destroy((error) => {
     if (error) {
       next(error);

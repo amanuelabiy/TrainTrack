@@ -1,7 +1,10 @@
 import express from "express";
 import * as WorkoutController from "../controllers/workoutController";
+import authMiddleWare from "../middleware/authMiddleWare";
 
 const router = express.Router();
+
+router.use(authMiddleWare);
 
 router.post("/", WorkoutController.createWorkout);
 

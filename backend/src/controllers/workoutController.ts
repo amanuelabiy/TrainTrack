@@ -41,8 +41,10 @@ export const createWorkout: RequestHandler<
 };
 
 export const getWorkouts: RequestHandler = async (req, res, next) => {
+  const userId = req.session.userId;
+
   try {
-    const workouts = await workoutService.getWorkouts();
+    const workouts = await workoutService.getWorkouts(userId);
     res.status(200).json(workouts);
   } catch (error) {
     next(error);

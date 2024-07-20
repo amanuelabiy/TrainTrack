@@ -64,8 +64,14 @@ export const getWorkout = async (workoutId: Types.ObjectId) => {
   return workout;
 };
 
-export const getWorkouts = async () => {
-  const workouts = await WorkoutModel.find().populate("exercises").exec();
+export const getWorkouts = async (userId: Types.ObjectId | undefined) => {
+  if (!userId) {
+    throw createHttpError(401, "User not authenticated");
+  }
+
+  const workouts = await WorkoutModel.find({ userId: userId })
+    .populate("exercises")
+    .exec();
 
   return workouts;
 };

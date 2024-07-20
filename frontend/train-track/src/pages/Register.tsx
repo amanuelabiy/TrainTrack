@@ -1,21 +1,28 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { RegisterForm } from "../types/accountTypes";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { LoginForm, RegisterForm } from "../types/accountTypes";
 import Input from "@/components/register/Input";
-import RegisterBtn from "@/components/register/RegisterBtn";
+
+import * as UserApi from "../network/user_api";
+import { Button } from "@/components/ui/button";
 
 function Register() {
-  const [formData, setFormData] = useState<RegisterForm>({
-    email: "",
-    username: "",
-    password: "",
-    confirmedPassword: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSumbitting },
+  } = useForm<RegisterForm>();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
-    console.log("Name: " + name, "Value: " + value);
-    setFormData({ ...formData, [name]: value });
+  const navigate = useNavigate();
+
+  const onSubmit = async (credentials: RegisterForm) => {
+    try {
+      const newUser = await UserApi.signUp(credentials);
+      console.log(newUser);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -23,44 +30,33 @@ function Register() {
       <h1 className="font-bold text-center tracking-tight text-28px mt-32 mb-3">
         Create an Account
       </h1>
-      <form className="mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto">
         <Input
           id="username"
           label="Username"
-          type="text"
-          value={formData.username}
-          onChange={handleChange}
           placeholder="Enter Username"
-          name="username"
+          {...register("username", { required: "Username is required" })}
         />
+        {errors.username && <p>{errors.username.message}</p>}
         <Input
           id="email"
           label="Email"
           type="email"
-          value={formData.email}
-          onChange={handleChange}
           placeholder="Enter Email"
-          name="email"
+          {...register("email", { required: "Email is required" })}
         />
+        {errors.email && <p>{errors.email.message}</p>}
         <Input
           id="password"
           label="Password"
           type="password"
-          value={formData.password}
-          onChange={handleChange}
           placeholder="Enter password"
-          name="password"
+          {...register("password", { required: "Password is required" })}
         />
-        <Input
-          id="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          value={formData.confirmedPassword}
-          onChange={handleChange}
-          placeholder="Enter password"
-          name="confirmedPassword"
-        />
-        <RegisterBtn />
+        {errors.password && <p>{errors.password.message}</p>}
+        <Button type="submit" className="my-7 w-96">
+          Create Account
+        </Button>
       </form>
       <Link
         to="/login"
