@@ -8,12 +8,23 @@ export const productionUrl = "http://localhost:5000/api";
 
 export async function fetchData(input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, { ...init, credentials: "include" });
+  const contentType = response.headers.get("content-type");
   if (response.ok) {
-    return response;
+    if (contentType && contentType.includes("application/json")) {
+      return response.json();
+    } else {
+      return null;
+    }
   } else {
-    const errorBody = await response.json();
-    const errorMessage = errorBody.error;
-    throw Error(errorMessage);
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      const errorBody = await response.json();
+      const errorMessage = errorBody.error;
+      throw Error(errorMessage);
+    } else {
+      throw Error("Unknown error occured");
+    }
   }
 }
 
@@ -21,7 +32,7 @@ export async function fetchWorkouts(): Promise<AllWorkoutReponse> {
   const response = await fetchData(`${productionUrl}/workouts`, {
     method: "GET",
   });
-  return response.json();
+  return response;
 }
 
 export async function createWorkout(
@@ -34,7 +45,7 @@ export async function createWorkout(
     },
     body: JSON.stringify(workout),
   });
-  return response.json();
+  return response;
 }
 
 export async function updateWorkout(
@@ -48,7 +59,7 @@ export async function updateWorkout(
     },
     body: JSON.stringify(workout),
   });
-  return response.json();
+  return response;
 }
 
 export async function deleteWorkout(
@@ -59,5 +70,5 @@ export async function deleteWorkout(
     method: "DELETE",
   });
 
-  return response.json();
+  return response;
 }

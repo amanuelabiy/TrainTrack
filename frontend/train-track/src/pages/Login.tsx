@@ -1,22 +1,32 @@
 import { LoginForm } from "@/types/accountTypes";
-import { useState } from "react";
-
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "@/components/register/Input";
 import LoginBtn from "@/components/register/LoginBtn";
 import GoogleLoginButton from "@/components/register/GoogleLoginButton";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { login } from "@/features/auth/authSlice";
+import { RootState } from "@/store";
 
 function Login() {
-  const [formData, setFormData] = useState<LoginForm>({
-    email: "",
-    username: "",
-    password: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSumbitting },
+  } = useForm<LoginForm>();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
-    console.log("Name: " + name, "Value: " + value);
-    setFormData({ ...formData, [name]: value });
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const user = useAppSelector((state: RootState) => state.auth.user);
+
+  const onSubmit = async (credentials: LoginForm) => {
+    try {
+      await dispatch(login(credentials)).unwrap();
+      navigate("/");
+      console.log(user);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -24,34 +34,38 @@ function Login() {
       <h1 className="font-bold text-center tracking-tight text-28px mt-32 mb-3">
         Login
       </h1>
-      <form className="mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto">
         <Input
-          id="email"
-          label="Email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Enter Email"
-          name="email"
+          id="username"
+          label="Username"
+          type="text"
+          placeholder="Enter username"
+          {...register("username", { required: "Username is required" })}
         />
-        <div className="mb-3">
+        <div>
           <div className="mb-2">
             <Input
               id="password"
               label="Password"
               type="password"
-              value={formData.password}
-              onChange={handleChange}
               placeholder="Enter password"
-              name="password"
+              {...register("password", { required: "Password is required" })}
             />
           </div>
-          <Link
-            to="/login"
-            className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1  text-center underline"
-          >
-            Forgot your password?
-          </Link>
+          <div className="flex flex-col items-start text-left">
+            <Link
+              to="/login"
+              className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1  text-center underline"
+            >
+              Forgot your password?
+            </Link>
+            <Link
+              to="/register"
+              className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1  text-center underline"
+            >
+              Don't have an account?
+            </Link>
+          </div>
         </div>
         <div className="w-full flex flex-col space-y-0">
           <LoginBtn />

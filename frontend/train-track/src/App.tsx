@@ -14,6 +14,11 @@ import {
 import CreateCustomSplitPage from "./pages/CreateCustomSplitPage";
 
 import { loader as workoutsLoader } from "./pages/CreateCustomSplitPage";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import { useEffect } from "react";
+import { fetchAuthenticatedUser } from "./features/auth/authSlice";
+import ProtectedRoute from "./utils/ProtectedRoute";
+import { RootState } from "./store";
 
 const router = createBrowserRouter([
   {
@@ -22,11 +27,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Today />,
+        element: (
+          <ProtectedRoute>
+            <Today />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "history",
-        element: <History />,
+        element: (
+          <ProtectedRoute>
+            <History />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "login",
@@ -34,11 +47,19 @@ const router = createBrowserRouter([
       },
       {
         path: "mysplit",
-        element: <MySplit />,
+        element: (
+          <ProtectedRoute>
+            <MySplit />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: "create-custom-split",
-            element: <CreateCustomSplitPage />,
+            element: (
+              <ProtectedRoute>
+                <CreateCustomSplitPage />
+              </ProtectedRoute>
+            ),
             loader: workoutsLoader,
           },
         ],
@@ -49,21 +70,43 @@ const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <Settings />,
+        element: (
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "upcoming",
-        element: <Upcoming />,
+        element: (
+          <ProtectedRoute>
+            <Upcoming />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "statistics",
-        element: <Statistics />,
+        element: (
+          <ProtectedRoute>
+            <Statistics />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
 ]);
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  const { user, status } = useAppSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    dispatch(fetchAuthenticatedUser());
+  }, [dispatch]);
+
+  console.log("App Reloaded");
+
   return <RouterProvider router={router} />;
 }
 export default App;

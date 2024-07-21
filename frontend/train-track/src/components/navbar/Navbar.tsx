@@ -1,8 +1,6 @@
 import SettingsDropdown from "../settings/SettingsDropdown";
 import NavLinks from "./NavLinks";
 
-/*"hidden lg:block h-screen w-72 bg-primary-foreground */
-
 function Navbar() {
   return (
     <div className="h-full lg:mr-10">

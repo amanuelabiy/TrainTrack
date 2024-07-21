@@ -15,12 +15,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { setTheme } from "@/features/theme/themeSlice";
-import { RootState } from "@/store";
+import { type RootState } from "@/store";
+import { logout } from "@/features/auth/authSlice";
+import { toast } from "react-toastify";
 
 function SettingsDropdown() {
   const dispatch = useAppDispatch();
 
   const theme = useAppSelector((state: RootState) => state.themeState.theme);
+
+  const user = useAppSelector((state: RootState) => state.auth.user);
+
+  const handleSignOut = async () => {
+    try {
+      await dispatch(logout());
+      toast.success("Successfully signed out");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -28,7 +41,7 @@ function SettingsDropdown() {
         <User className="hover:cursor-pointer" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>Hello, {user?.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
@@ -58,6 +71,8 @@ function SettingsDropdown() {
             </DropdownMenuPortal>
           </DropdownMenuSub>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleSignOut}>Sign Out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

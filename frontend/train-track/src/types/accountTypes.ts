@@ -4,4 +4,7 @@ export interface RegisterForm {
   password: string;
 }
 
-export interface LoginForm extends RegisterForm {}
+export interface LoginForm {
+  username: string;
+  password: string;
+}

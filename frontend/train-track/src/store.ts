@@ -1,16 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import themeReducer from "./features/theme/themeSlice";
-import progressReducer from "./features/progress/progressSlice";
 import workoutPlanReducer from "./features/workoutPlan/workoutPlanSlice";
+import authReducer from "./features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
-    progressState: progressReducer,
     workoutPlanState: workoutPlanReducer,
     themeState: themeReducer,
+    auth: authReducer,
   },
 });
+
+// store.subscribe(() => {
+//   saveState(store.getState().auth);
+// });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

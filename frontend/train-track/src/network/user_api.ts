@@ -4,7 +4,7 @@ import { fetchData } from "./workout_api";
 
 export async function getLoggedInUser(): Promise<User> {
   const response = await fetchData(`${productionUrl}/users`, { method: "GET" });
-  return response.json();
+  return response;
 }
 
 export interface SignUpCredentials {
@@ -21,7 +21,7 @@ export async function signUp(credentials: SignUpCredentials): Promise<User> {
     },
     body: JSON.stringify(credentials),
   });
-  return response.json();
+  return response;
 }
 
 export interface LoginCredentials {
@@ -37,9 +37,14 @@ export async function login(credentials: LoginCredentials): Promise<User> {
     },
     body: JSON.stringify(credentials),
   });
-  return response.json();
+
+  if (response) {
+    return response;
+  } else {
+    throw new Error("No response from server");
+  }
 }
 
 export async function logout() {
-  await fetchData("/api/users/logout", { method: "POST" });
+  await fetchData(`${productionUrl}/users/logout`, { method: "POST" });
 }

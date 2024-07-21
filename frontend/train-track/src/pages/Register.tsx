@@ -1,10 +1,12 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { LoginForm, RegisterForm } from "../types/accountTypes";
+import { type RegisterForm } from "../types/accountTypes";
 import Input from "@/components/register/Input";
-
+import { signUp } from "@/features/auth/authSlice";
 import * as UserApi from "../network/user_api";
 import { Button } from "@/components/ui/button";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { RootState } from "@/store";
 
 function Register() {
   const {
@@ -13,13 +15,15 @@ function Register() {
     formState: { errors, isSumbitting },
   } = useForm<RegisterForm>();
 
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
 
   const onSubmit = async (credentials: RegisterForm) => {
     try {
-      const newUser = await UserApi.signUp(credentials);
-      console.log(newUser);
+      await dispatch(signUp(credentials)).unwrap();
       navigate("/");
+      console.log(user);
     } catch (error) {
       console.error(error);
     }

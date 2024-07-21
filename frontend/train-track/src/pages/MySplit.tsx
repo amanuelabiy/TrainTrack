@@ -2,14 +2,7 @@ import CreateCustomSplit from "@/components/mysplit/CreateCustomSplit";
 import SetWeeklySplit from "@/components/mysplit/SetWeeklySplit";
 import CustomizeWorkoutSplit from "@/components/mysplit/CustomizeWorkoutSplit";
 import { useEffect, useState } from "react";
-import {
-  type LoaderFunction,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
-import { type AllWorkoutReponse } from "@/types/workoutTypes";
-import { customFetch } from "@/network/customFetch";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 function MySplit() {
   const [editSplit, setEditSplit] = useState<boolean>(false);
