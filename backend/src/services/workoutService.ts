@@ -8,6 +8,7 @@ import { deleteExercise } from "./exerciseService";
 import { Day } from "types/types";
 
 interface WorkoutData {
+  userId?: Types.ObjectId;
   workoutName: string;
   exercises: IExercise[];
   day: Day;
@@ -15,7 +16,9 @@ interface WorkoutData {
 }
 
 export const createWorkout = async (workoutData: WorkoutData) => {
-  const { workoutName, exercises, day, notes } = workoutData;
+  const { userId, workoutName, exercises, day, notes } = workoutData;
+
+  console.log(workoutData);
 
   try {
     const exerciseDocs = await Promise.all(
@@ -31,6 +34,7 @@ export const createWorkout = async (workoutData: WorkoutData) => {
       exercises: exerciseDocs,
       notes,
       day,
+      userId,
     });
 
     await newWorkout.save();
@@ -52,8 +56,11 @@ export const createWorkout = async (workoutData: WorkoutData) => {
   }
 };
 
-export const getWorkout = async (workoutId: Types.ObjectId) => {
-  const workout = await WorkoutModel.findById(workoutId)
+export const getWorkout = async (
+  workoutId: Types.ObjectId,
+  userId: Types.ObjectId
+) => {
+  const workout = await WorkoutModel.findOne({ _id: workoutId, userId: userId })
     .populate("exercises")
     .exec();
 
@@ -64,7 +71,7 @@ export const getWorkout = async (workoutId: Types.ObjectId) => {
   return workout;
 };
 
-export const getWorkouts = async (userId: Types.ObjectId | undefined) => {
+export const getWorkouts = async (userId: Types.ObjectId) => {
   if (!userId) {
     throw createHttpError(401, "User not authenticated");
   }
@@ -85,11 +92,15 @@ interface UpdateWorkoutData {
 
 export const updateWorkout = async (
   workoutId: Types.ObjectId,
-  updateData: UpdateWorkoutData
+  updateData: UpdateWorkoutData,
+  userId: Types.ObjectId
 ) => {
   const { workoutName, exercises, notes, day } = updateData;
 
-  const workout = await WorkoutModel.findById(workoutId).exec();
+  const workout = await WorkoutModel.findOne({
+    _id: workoutId,
+    userId: userId,
+  }).exec();
 
   if (!workout) {
     throw createHttpError(404, "Workout Not Found");
@@ -152,15 +163,24 @@ export const updateWorkout = async (
 
   await workout.save();
 
-  const populatedWorkout = await WorkoutModel.findById(workoutId)
+  const populatedWorkout = await WorkoutModel.findOne({
+    _id: workoutId,
+    userId: userId,
+  })
     .populate("exercises")
     .exec();
 
   return populatedWorkout;
 };
 
-export const deleteWorkout = async (workoutId: Types.ObjectId) => {
-  const workout = await WorkoutModel.findById(workoutId)
+export const deleteWorkout = async (
+  workoutId: Types.ObjectId,
+  userId: Types.ObjectId
+) => {
+  const workout = await WorkoutModel.findOne({
+    _id: workoutId,
+    userId: userId,
+  })
     .populate("exercises")
     .exec();
 
@@ -176,7 +196,10 @@ export const deleteWorkout = async (workoutId: Types.ObjectId) => {
     );
   }
 
-  const deletedWorkout = await WorkoutModel.findByIdAndDelete(workoutId);
+  const deletedWorkout = await WorkoutModel.findOneAndDelete({
+    _id: workoutId,
+    userId: userId,
+  });
 
   return deletedWorkout;
 };

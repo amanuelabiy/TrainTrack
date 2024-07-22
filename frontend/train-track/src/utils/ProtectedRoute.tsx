@@ -10,9 +10,11 @@ interface ProtectedRouteProps {
 function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, status } = useAppSelector((state: RootState) => state.auth);
 
-  if (status === "loading") return <div>loading...</div>;
+  if (status === "loading") {
+    return <div>Loading ... </div>;
+  }
 
-  if (!user && status !== "loading") {
+  if (user === null && status === "succeeded") {
     return <Navigate to="/login" />;
   }
 

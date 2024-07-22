@@ -7,6 +7,7 @@ import mongoose, { Types } from "mongoose";
 import { createExercise, updateExercise } from "../services/exerciseService";
 import * as workoutService from "../services/workoutService";
 import { Day } from "../types/types";
+import { assertIsDefined } from "../utils/assertIsDefined";
 
 interface WorkoutBody {
   workoutName?: string;
@@ -22,13 +23,16 @@ export const createWorkout: RequestHandler<
   unknown
 > = async (req, res, next) => {
   const { workoutName, exercises, day, notes } = req.body;
+  const userId = req.session.userId;
 
   try {
+    assertIsDefined(userId);
     if (!workoutName || !exercises || !day || !Array.isArray(exercises)) {
       throw createHttpError(400, "Missing or Invalid Workout Fields");
     }
 
     const newWorkout = await workoutService.createWorkout({
+      userId,
       workoutName,
       exercises,
       day,
@@ -42,6 +46,7 @@ export const createWorkout: RequestHandler<
 
 export const getWorkouts: RequestHandler = async (req, res, next) => {
   const userId = req.session.userId;
+  assertIsDefined(userId);
 
   try {
     const workouts = await workoutService.getWorkouts(userId);
@@ -57,6 +62,8 @@ export const getWorkout: RequestHandler<{ workoutId: string }> = async (
   next
 ) => {
   const { workoutId } = req.params;
+  const userId = req.session.userId;
+  assertIsDefined(userId);
 
   try {
     if (!mongoose.isValidObjectId(workoutId)) {
@@ -64,7 +71,8 @@ export const getWorkout: RequestHandler<{ workoutId: string }> = async (
     }
 
     const workout = await workoutService.getWorkout(
-      new mongoose.Types.ObjectId(workoutId)
+      new mongoose.Types.ObjectId(workoutId),
+      userId
     );
 
     res.status(200).json(workout);
@@ -102,6 +110,9 @@ export const updateWorkout: RequestHandler<
   const newExercises = req.body.exercises;
   const newNotes = req.body.notes;
 
+  const userId = req.session.userId;
+  assertIsDefined(userId);
+
   try {
     if (!mongoose.isValidObjectId(workoutId)) {
       throw createHttpError(400, "Invalid Workout Id");
@@ -119,7 +130,8 @@ export const updateWorkout: RequestHandler<
 
     const updatedWorkout = await workoutService.updateWorkout(
       new mongoose.Types.ObjectId(workoutId),
-      updateData
+      updateData,
+      userId
     );
 
     res.status(200).json(updatedWorkout);
@@ -134,6 +146,8 @@ export const deleteWorkout: RequestHandler<{ workoutId: string }> = async (
   next
 ) => {
   const { workoutId } = req.params;
+  const userId = req.session.userId;
+  assertIsDefined(userId);
 
   try {
     if (!mongoose.isValidObjectId(workoutId)) {
@@ -141,7 +155,8 @@ export const deleteWorkout: RequestHandler<{ workoutId: string }> = async (
     }
 
     const deletedWorkout = await workoutService.deleteWorkout(
-      new mongoose.Types.ObjectId(workoutId)
+      new mongoose.Types.ObjectId(workoutId),
+      userId
     );
 
     res.status(200).json(deletedWorkout);

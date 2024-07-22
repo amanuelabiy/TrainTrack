@@ -6,6 +6,7 @@ import LoginBtn from "@/components/register/LoginBtn";
 import GoogleLoginButton from "@/components/register/GoogleLoginButton";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { login } from "@/features/auth/authSlice";
+import { toast } from "react-toastify";
 import { RootState } from "@/store";
 
 function Login() {
@@ -17,15 +18,15 @@ function Login() {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector((state: RootState) => state.auth.user);
 
   const onSubmit = async (credentials: LoginForm) => {
     try {
-      await dispatch(login(credentials)).unwrap();
+      const logginedInUser = await dispatch(login(credentials)).unwrap();
+      toast.success(`Welcome ${logginedInUser.username}! 😀`);
       navigate("/");
-      console.log(user);
     } catch (error) {
       console.error(error);
+      toast.error("Invalid credentials. Please try again.");
     }
   };
 
@@ -55,13 +56,13 @@ function Login() {
           <div className="flex flex-col items-start text-left">
             <Link
               to="/login"
-              className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1  text-center underline"
+              className="text-primary text-sm font-normal leading-normal pb-3 pt-1  text-center underline"
             >
               Forgot your password?
             </Link>
             <Link
               to="/register"
-              className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1  text-center underline"
+              className="text-primary text-sm font-normal leading-normal pb-3 pt-1  text-center underline"
             >
               Don't have an account?
             </Link>

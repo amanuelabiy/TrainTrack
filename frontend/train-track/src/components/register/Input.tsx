@@ -12,7 +12,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="flex-col mt-9">
         <label
-          className="block text-gray-700 text-sm font-bold mb-2"
+          className="block text-foreground text-sm font-bold mb-2"
           htmlFor={id}
         >
           {label}

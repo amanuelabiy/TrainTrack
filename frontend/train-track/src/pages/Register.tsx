@@ -7,6 +7,7 @@ import * as UserApi from "../network/user_api";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { RootState } from "@/store";
+import { toast } from "react-toastify";
 
 function Register() {
   const {
@@ -25,7 +26,16 @@ function Register() {
       navigate("/");
       console.log(user);
     } catch (error) {
-      console.error(error);
+      if (
+        typeof error === "object" &&
+        error &&
+        "message" in error &&
+        typeof error.message === "string"
+      ) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error has occurred");
+      }
     }
   };
 
@@ -58,19 +68,19 @@ function Register() {
           {...register("password", { required: "Password is required" })}
         />
         {errors.password && <p>{errors.password.message}</p>}
-        <Button type="submit" className="my-7 w-96">
+        <Button type="submit" className="my-7 w-96 text-white">
           Create Account
         </Button>
       </form>
       <Link
         to="/login"
-        className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline"
+        className="text-primary text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline"
       >
         Already have an account?
       </Link>
       <Link
         to="/login"
-        className="text-[#637588] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline"
+        className="text-primary text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline"
       >
         Login
       </Link>

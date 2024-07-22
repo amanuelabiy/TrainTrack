@@ -1,5 +1,5 @@
+import "react-toastify/dist/ReactToastify.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-
 import {
   Layout,
   History,
@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { fetchAuthenticatedUser } from "./features/auth/authSlice";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { RootState } from "./store";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -105,8 +106,11 @@ function App() {
     dispatch(fetchAuthenticatedUser());
   }, [dispatch]);
 
-  console.log("App Reloaded");
-
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </>
+  );
 }
 export default App;
