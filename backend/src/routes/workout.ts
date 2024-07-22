@@ -12,6 +12,8 @@ router.get("/", WorkoutController.getWorkouts);
 
 router.get("/:workoutId", WorkoutController.getWorkout);
 
+router.get("/day/:day", WorkoutController.getWorkoutsForDay);
+
 router.patch("/:workoutId", WorkoutController.updateWorkout);
 
 router.delete("/:workoutId", WorkoutController.deleteWorkout);

@@ -83,6 +83,19 @@ export const getWorkouts = async (userId: Types.ObjectId) => {
   return workouts;
 };
 
+export const getWorkoutsForDay = async (day: Day, userId: Types.ObjectId) => {
+  const workouts = await WorkoutModel.find({
+    userId: userId,
+    day: day,
+  })
+    .populate("exercises")
+    .exec();
+
+  console.log(`Workouts found ${workouts}`);
+
+  return workouts;
+};
+
 interface UpdateWorkoutData {
   workoutName?: string;
   exercises?: Partial<IExercise>[];

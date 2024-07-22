@@ -25,7 +25,7 @@ function MySplit() {
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold tracking-wide">My Workout Split</h1>
+      <h1 className="text-3xl font-bold tracking-tight">My Workout Split</h1>
 
       {!editSplit ? (
         <>

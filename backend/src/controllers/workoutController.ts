@@ -56,6 +56,25 @@ export const getWorkouts: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const getWorkoutsForDay: RequestHandler = async (req, res, next) => {
+  const userId = req.session.userId;
+  const { day } = req.params;
+  assertIsDefined(userId);
+
+  if (!Object.values(Day).includes(day as Day)) {
+    throw next(createHttpError(400, "Invalid Day"));
+  }
+
+  console.log(`Fetching workouts for userId${userId} and ${day}`);
+  try {
+    const workouts = await workoutService.getWorkoutsForDay(day as Day, userId);
+
+    res.status(200).json(workouts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getWorkout: RequestHandler<{ workoutId: string }> = async (
   req,
   res,
