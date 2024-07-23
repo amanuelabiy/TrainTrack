@@ -65,7 +65,6 @@ export const getWorkoutsForDay: RequestHandler = async (req, res, next) => {
     throw next(createHttpError(400, "Invalid Day"));
   }
 
-  console.log(`Fetching workouts for userId${userId} and ${day}`);
   try {
     const workouts = await workoutService.getWorkoutsForDay(day as Day, userId);
 

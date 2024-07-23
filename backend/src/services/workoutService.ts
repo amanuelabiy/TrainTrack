@@ -91,8 +91,6 @@ export const getWorkoutsForDay = async (day: Day, userId: Types.ObjectId) => {
     .populate("exercises")
     .exec();
 
-  console.log(`Workouts found ${workouts}`);
-
   return workouts;
 };
 

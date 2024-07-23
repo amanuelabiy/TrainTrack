@@ -14,6 +14,7 @@ import {
 import CreateCustomSplitPage from "./pages/CreateCustomSplitPage";
 
 import { loader as workoutsLoader } from "./pages/CreateCustomSplitPage";
+import { loader as todayWorkoutLoader } from "./pages/Today";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { useEffect } from "react";
 import { fetchAuthenticatedUser } from "./features/auth/authSlice";
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
             <Today />
           </ProtectedRoute>
         ),
+        loader: todayWorkoutLoader,
       },
       {
         path: "history",

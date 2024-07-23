@@ -2,6 +2,7 @@ import {
   type Workout,
   type WorkoutResponse,
   type AllWorkoutReponse,
+  Day,
 } from "@/types/workoutTypes";
 
 export const productionUrl = "http://localhost:5000/api";
@@ -32,6 +33,16 @@ export async function fetchWorkouts(): Promise<AllWorkoutReponse> {
   const response = await fetchData(`${productionUrl}/workouts`, {
     method: "GET",
   });
+  return response;
+}
+
+export async function fetchtWorkoutsForDay(
+  day: Day
+): Promise<AllWorkoutReponse> {
+  const response = await fetchData(`${productionUrl}/workouts/day/${day}`, {
+    method: "GET",
+  });
+
   return response;
 }
 
