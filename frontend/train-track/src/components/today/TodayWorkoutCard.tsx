@@ -9,6 +9,7 @@ import {
 } from "../ui/carousel";
 import { Card, CardContent } from "../ui/card";
 import { LuDumbbell } from "react-icons/lu";
+import { Button } from "../ui/button";
 
 function TodayWorkoutCard() {
   const workoutsForTheDay = useLoaderData() as WorkoutResponse[];
@@ -42,6 +43,9 @@ function TodayWorkoutCard() {
                           </div>
                         ))}
                       </CardContent>
+                      <Button className="flex mx-auto mb-4">
+                        Start Workout
+                      </Button>
                     </Card>
                   </div>
                 </CarouselItem>
