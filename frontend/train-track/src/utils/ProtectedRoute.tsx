@@ -1,6 +1,5 @@
 import { useAppSelector } from "@/hooks";
 import { RootState } from "@/store";
-import React from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -14,7 +13,7 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <div>Loading ... </div>;
   }
 
-  if (user === null && status === "succeeded") {
+  if (user === null && (status === "succeeded" || status === "failed")) {
     return <Navigate to="/login" />;
   }
 

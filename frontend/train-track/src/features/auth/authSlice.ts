@@ -57,7 +57,14 @@ export const fetchAuthenticatedUser = createAsyncThunk<User | null>(
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    },
+    setUser: (state, action: PayloadAction<User | null>) => {
+      state.user = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
@@ -110,5 +117,7 @@ const authSlice = createSlice({
       });
   },
 });
+
+export const { setError, setUser } = authSlice.actions;
 
 export default authSlice.reducer;

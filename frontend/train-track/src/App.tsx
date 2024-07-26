@@ -16,11 +16,13 @@ import CreateCustomSplitPage from "./pages/CreateCustomSplitPage";
 import { loader as workoutsLoader } from "./pages/CreateCustomSplitPage";
 import { loader as todayWorkoutLoader } from "./pages/Today";
 import { useAppDispatch, useAppSelector } from "./hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchAuthenticatedUser } from "./features/auth/authSlice";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { RootState } from "./store";
 import { ToastContainer } from "react-toastify";
+import { CookiesProvider } from "react-cookie";
+import { setUser } from "./features/auth/authSlice";
 
 const router = createBrowserRouter([
   {
@@ -101,17 +103,33 @@ const router = createBrowserRouter([
 
 function App() {
   const dispatch = useAppDispatch();
-
-  const { user, status } = useAppSelector((state: RootState) => state.auth);
+  const { status } = useAppSelector((state: RootState) => state.auth);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    dispatch(fetchAuthenticatedUser());
+    const checkAuth = async () => {
+      try {
+        const user = await dispatch(fetchAuthenticatedUser()).unwrap();
+        dispatch(setUser(user));
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
   }, [dispatch]);
+
+  if (isLoading || status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
-      <RouterProvider router={router} />
-      <ToastContainer />
+      <CookiesProvider>
+        <RouterProvider router={router} />
+        <ToastContainer />
+      </CookiesProvider>
     </>
   );
 }
