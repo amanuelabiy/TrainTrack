@@ -27,6 +27,16 @@ function TodayWorkoutCard() {
     return workoutsForTheDay.find((workout) => workout.workingOut);
   };
 
+  const handleCancelClick = (cancelWorkout: TodayWorkout) => {
+    setWorkoutsForTheDay((prevWorkouts) =>
+      prevWorkouts.map((workout) =>
+        workout._id === cancelWorkout._id
+          ? { ...cancelWorkout, workingOut: false }
+          : workout
+      )
+    );
+  };
+
   const startedWorkout = checkForStartedWorkout();
 
   return (
@@ -36,7 +46,10 @@ function TodayWorkoutCard() {
       </h1>
       {workoutsForTheDay.length > 0 ? (
         startedWorkout ? (
-          <InProgressWorkout workout={startedWorkout} />
+          <InProgressWorkout
+            workout={startedWorkout}
+            handleCancelClick={handleCancelClick}
+          />
         ) : (
           <WorkoutsCarousel
             workouts={workoutsForTheDay}

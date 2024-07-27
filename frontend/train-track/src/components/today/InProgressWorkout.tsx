@@ -7,9 +7,13 @@ import { Button } from "../ui/button";
 
 interface InProgressWorkoutProps {
   workout: TodayWorkout;
+  handleCancelClick: (cancelWorkout: TodayWorkout) => void;
 }
 
-function InProgressWorkout({ workout }: InProgressWorkoutProps) {
+function InProgressWorkout({
+  workout,
+  handleCancelClick,
+}: InProgressWorkoutProps) {
   return (
     <div>
       <h1>{workout.workoutName}</h1>
@@ -42,7 +46,11 @@ function InProgressWorkout({ workout }: InProgressWorkoutProps) {
           />
         </div>
         <div className="flex justify-center gap-4 mb-10">
-          <Button variant="outline" className="align-center w-56">
+          <Button
+            variant="outline"
+            className="align-center w-56"
+            onClick={() => handleCancelClick(workout)}
+          >
             Cancel Workout
           </Button>
           <Button className="align-center w-56">Save Workout</Button>
