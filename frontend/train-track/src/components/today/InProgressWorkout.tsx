@@ -4,6 +4,9 @@ import { Progress } from "../ui/progress";
 import { TodayWorkout } from "./TodayWorkoutCard";
 import { LuDumbbell } from "react-icons/lu";
 import { Button } from "../ui/button";
+import { Exercise } from "@/types/workoutTypes";
+import { useState } from "react";
+import ExerciseDialog from "./ExerciseDialog";
 
 interface InProgressWorkoutProps {
   workout: TodayWorkout;
@@ -14,17 +17,22 @@ function InProgressWorkout({
   workout,
   handleCancelClick,
 }: InProgressWorkoutProps) {
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
+    null
+  );
+
   return (
     <div>
-      <h1>{workout.workoutName}</h1>
+      <h1 className="ml-[8px]">{workout.workoutName}</h1>
       <Card className="w-[90%] h-[600px] border-none flex flex-col justify-between bg-transparent">
         <CardContent className="flex-items aspect-video items-center justify-center p-3">
           {workout.exercises.map((exercise, index) => (
             <div
-              className={`flex items-center gap-10 ${
+              className={`flex items-center gap-10 p-3 transition-colors duration-300 ease-in-out ${
                 index === 0 ? "" : "mt-5"
-              }`}
+              } hover:bg-secondary hover:border hover:border-gray-300 hover:cursor-pointer`}
               key={exercise._id}
+              onClick={() => setSelectedExercise(exercise)}
             >
               <LuDumbbell className="w-8 h-8" />
               <div className="flex flex-col">
@@ -56,6 +64,14 @@ function InProgressWorkout({
           <Button className="align-center w-56">Save Workout</Button>
         </div>
       </Card>
+      {selectedExercise && (
+        <ExerciseDialog
+          isOpen={!!selectedExercise}
+          onClose={() => setSelectedExercise(null)}
+          exercise={selectedExercise}
+          workout={workout}
+        />
+      )}
     </div>
   );
 }

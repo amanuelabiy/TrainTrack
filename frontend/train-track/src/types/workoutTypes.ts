@@ -5,13 +5,18 @@ export interface Workout {
   notes?: string;
 }
 
+interface WorkingSet {
+  weight: number;
+  reps: number;
+}
+
 export interface Exercise {
   _id?: string;
   workoutName: string;
   name: string;
   sets: number;
   reps: number;
-  weight: number;
+  workingSets?: WorkingSet[];
   notes?: string;
   completed?: boolean;
   __v?: number;

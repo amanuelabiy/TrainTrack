@@ -8,7 +8,7 @@ export const createExercise = async (exerciseData: IExercise) => {
   const name = exerciseData.name;
   const sets = exerciseData.sets;
   const reps = exerciseData.reps;
-  const weight = exerciseData.weight;
+  const workingSets = exerciseData.workingSets;
   const notes = exerciseData.notes;
   const completed = exerciseData.completed;
 
@@ -22,7 +22,7 @@ export const createExercise = async (exerciseData: IExercise) => {
       name: name,
       sets: sets,
       reps: reps,
-      weight: weight,
+      workingSets: workingSets,
       notes: notes,
       completed: completed,
     });

@@ -6,13 +6,26 @@ import {
   model,
 } from "mongoose";
 
+const workingSetSchema = new Schema(
+  {
+    weight: { type: Number, required: true },
+    reps: { type: Number, required: true },
+  },
+  { _id: false }
+);
+
+interface WorkingSet {
+  weight: number;
+  reps: number;
+}
+
 interface IExercise {
   _id?: Types.ObjectId;
   workoutName: string;
   name: string;
   sets: number;
   reps: number;
-  weight?: number;
+  workingSets?: WorkingSet[];
   notes?: string;
   completed?: boolean;
 }
@@ -22,7 +35,7 @@ const exerciseSchema: Schema<IExercise> = new Schema({
   name: { type: String, required: true },
   sets: { type: Number, required: true },
   reps: { type: Number, require: true },
-  weight: { type: Number, required: false },
+  workingSets: { type: [workingSetSchema], required: false },
   notes: { type: String, required: false },
   completed: { type: Boolean, required: false },
 });
