@@ -58,7 +58,7 @@ function AddWorkoutCard({
         name: "",
         sets: 0,
         reps: 0,
-        weight: 0,
+        workingSets: [],
         notes: "",
         completed: false,
       },

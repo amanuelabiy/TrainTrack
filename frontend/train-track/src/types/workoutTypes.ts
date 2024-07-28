@@ -8,6 +8,7 @@ export interface Workout {
 interface WorkingSet {
   weight: number;
   reps: number;
+  completed: boolean;
 }
 
 export interface Exercise {

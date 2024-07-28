@@ -17,6 +17,7 @@ const workingSetSchema = new Schema(
 interface WorkingSet {
   weight: number;
   reps: number;
+  completed: boolean;
 }
 
 interface IExercise {

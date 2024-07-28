@@ -21,6 +21,10 @@ function InProgressWorkout({
     null
   );
 
+  const handleDialogSaveClick = () => {
+    //Change workout data here
+  };
+
   return (
     <div>
       <h1 className="ml-[8px]">{workout.workoutName}</h1>
@@ -70,6 +74,7 @@ function InProgressWorkout({
           onClose={() => setSelectedExercise(null)}
           exercise={selectedExercise}
           workout={workout}
+          handleDialogSaveClick={handleDialogSaveClick}
         />
       )}
     </div>
