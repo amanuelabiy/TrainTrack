@@ -4,7 +4,7 @@ import { Progress } from "../ui/progress";
 import { TodayWorkout } from "./TodayWorkoutCard";
 import { LuDumbbell } from "react-icons/lu";
 import { Button } from "../ui/button";
-import { Exercise } from "@/types/workoutTypes";
+import { Exercise, WorkingSet } from "@/types/workoutTypes";
 import { useState } from "react";
 import ExerciseDialog from "./ExerciseDialog";
 
@@ -21,8 +21,12 @@ function InProgressWorkout({
     null
   );
 
-  const handleDialogSaveClick = () => {
-    //Change workout data here
+  const handleDialogSaveClick = (
+    exercise: Exercise,
+    workingSets: WorkingSet[]
+  ) => {
+    console.log(exercise);
+    console.log(workingSets);
   };
 
   return (

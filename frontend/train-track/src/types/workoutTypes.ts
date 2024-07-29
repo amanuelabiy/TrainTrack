@@ -5,7 +5,7 @@ export interface Workout {
   notes?: string;
 }
 
-interface WorkingSet {
+export interface WorkingSet {
   weight: number;
   reps: number;
   completed: boolean;

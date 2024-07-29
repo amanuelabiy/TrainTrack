@@ -10,6 +10,7 @@ const workingSetSchema = new Schema(
   {
     weight: { type: Number, required: true },
     reps: { type: Number, required: true },
+    completed: { type: Boolean, required: true },
   },
   { _id: false }
 );

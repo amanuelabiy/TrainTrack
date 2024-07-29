@@ -17,6 +17,17 @@ export const createExercise = async (exerciseData: IExercise) => {
       throw createHttpError(400, "Missing or Invalid Exercise Fields");
     }
 
+    if (workingSets) {
+      for (const workingSet of workingSets) {
+        if (!workingSet.weight || !workingSet.reps || !workingSet.completed) {
+          throw createHttpError(
+            400,
+            "Missing or Invalid Working Set Exercise Fields"
+          );
+        }
+      }
+    }
+
     const newExercise = await ExerciseModel.create({
       workoutName: workoutName,
       name: name,

@@ -92,6 +92,11 @@ module.exports = {
       screens: {
         custom: "1255px",
       },
+      bigCheckbox: {
+        transform: "scale(1.5)",
+        width: "20px",
+        height: "20px",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
