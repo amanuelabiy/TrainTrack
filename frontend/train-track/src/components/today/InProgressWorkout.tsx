@@ -5,9 +5,11 @@ import { type TodayWorkout } from "./TodayWorkoutCard";
 import { LuDumbbell } from "react-icons/lu";
 import { Button } from "../ui/button";
 import { type Exercise, type WorkingSet } from "@/types/workoutTypes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExerciseDialog from "./ExerciseDialog";
 import { calcExerciseCompletion } from "@/utils/calcExerciseCompletion";
+import * as WorkoutsApi from "@/network/workout_api";
+import { toast } from "react-toastify";
 
 interface InProgressWorkoutProps {
   workout: TodayWorkout;
@@ -25,41 +27,36 @@ function InProgressWorkout({
   const [displayedWorkout, setDisplayedWorkout] =
     useState<TodayWorkout>(workout);
 
+  useEffect(() => {
+    setDisplayedWorkout(workout);
+  }, [workout]);
+
   console.log(displayedWorkout);
 
-  const handleDialogSaveClick = (
+  const handleDialogSaveClick = async (
     exercise: Exercise,
     workingSets: WorkingSet[]
   ) => {
-    const newDisplayedWorkoutExerciseArray = displayedWorkout.exercises.map(
-      (displayedExercise) =>
+    try {
+      const newExercises = displayedWorkout.exercises.map((displayedExercise) =>
         displayedExercise._id === exercise._id
-          ? { ...displayedExercise, workingSets: workingSets }
+          ? { ...displayedExercise, workingSets }
           : displayedExercise
-    );
+      );
 
-    const newExerciseArray = [];
+      const updatedDisplayWorkout = {
+        ...displayedWorkout,
+        exercises: newExercises,
+      };
 
-    console.log(
-      "The new displayed workout exercise array is",
-      newDisplayedWorkoutExerciseArray
-    );
+      const { workingOut, ...displayedWorkoutData } = updatedDisplayWorkout;
 
-    for (const newDisplayedExercise of newDisplayedWorkoutExerciseArray) {
-      if (newDisplayedExercise._id === exercise._id) {
-        const newExercise = {
-          ...newDisplayedExercise,
-          workingSets: newDisplayedExercise.workingSets,
-        };
-        newExerciseArray.push(newExercise);
-      } else {
-        newExerciseArray.push(newDisplayedExercise);
-      }
+      await WorkoutsApi.updateWorkout(displayedWorkoutData);
+
+      setDisplayedWorkout(updatedDisplayWorkout);
+    } catch (error) {
+      toast.error("error");
     }
-
-    console.log("The new exercise array is", newExerciseArray);
-
-    setDisplayedWorkout({ ...displayedWorkout, exercises: newExerciseArray });
   };
 
   return (
@@ -81,8 +78,11 @@ function InProgressWorkout({
                 <p className="text-sm">
                   {exercise.sets} sets of {exercise.reps} reps
                 </p>
-                <Progress value={calcExerciseCompletion(exercise)} />
               </div>
+              <Progress
+                value={calcExerciseCompletion(exercise)}
+                className="h-[5px] w-[50%] ml-auto"
+              />
             </div>
           ))}
         </CardContent>
@@ -99,7 +99,10 @@ function InProgressWorkout({
           <Button
             variant="outline"
             className="align-center w-56"
-            onClick={() => handleCancelClick(displayedWorkout)}
+            onClick={() => {
+              handleCancelClick(displayedWorkout);
+              setDisplayedWorkout(workout);
+            }}
           >
             Cancel Workout
           </Button>
