@@ -1,6 +1,9 @@
-import { WorkoutResponse } from "@/types/workoutTypes";
+import { type TodayWorkout } from "@/components/today/TodayWorkoutCard";
+import { type WorkoutResponse } from "@/types/workoutTypes";
 
-export function calcWorkoutCompletion(workout: WorkoutResponse): number {
+export function calcWorkoutCompletion(
+  workout: WorkoutResponse | TodayWorkout
+): number {
   const totalExercises = workout.exercises.length;
   let completedExercises = 0;
 

@@ -35,12 +35,13 @@ function ExerciseDialog({
   const numberOfWorkingSets = exercise.sets;
 
   const [workingSets, setWorkingSets] = useState(
-    exercise.workingSets ||
-      Array.from({ length: numberOfWorkingSets }, () => ({
-        weight: 0,
-        reps: 0,
-        completed: false,
-      }))
+    Array.isArray(exercise.workingSets) && exercise.workingSets.length > 0
+      ? exercise.workingSets
+      : Array.from({ length: numberOfWorkingSets }, () => ({
+          weight: 0,
+          reps: 0,
+          completed: false,
+        }))
   );
 
   const handleInputChange = (
@@ -108,62 +109,50 @@ function ExerciseDialog({
             <p className="font-bold">Today Reps</p>
           </div>
           <div className="grid grid-cols-2 gap-[40px] mt-6">
-            {workingSets && workingSets.length > 0
-              ? workingSets.map((workingSet, index) => (
-                  <div
-                    className="col-span-2 flex items-center gap-[40px]"
-                    key={index}
-                  >
-                    <Checkbox
-                      checked={workingSet.completed}
-                      onCheckedChange={(checked) =>
-                        handleCompletedChanged(checked as boolean, index)
-                      }
-                    />
-                    <p className="ml-4">{index + 1}</p>
-                    <p className="w-36 ml-7">
-                      {exercise.workingSets
-                        ? exercise.workingSets[index].weight
-                        : ""}
-                    </p>
-                    <p className="mr-5">
-                      {exercise.workingSets
-                        ? exercise.workingSets[index].reps
-                        : ""}
-                    </p>
-                    <input
-                      className="border p-2 w-[100px] bg-background rounded-lg"
-                      type="number"
-                      onChange={(event) => handleWeightChange(event, index)}
-                      value={workingSet.weight}
-                    />
-                    <input
-                      className="border p-2 w-[50px] bg-background rounded-lg"
-                      type="number"
-                      onChange={(event) => handleRepsChange(event, index)}
-                      value={workingSet.reps}
-                    />
-                  </div>
-                ))
-              : Array.from({ length: numberOfWorkingSets }).map((_, index) => (
-                  <div
-                    className="col-span-2 flex items-center gap-[40px]"
-                    key={index}
-                  >
-                    <Checkbox />
-                    <p className="w-10">{index + 1}</p>
-                    <p className="w-36 ml-6"></p>
-                    <p className="mr-[50px]"></p>
-                    <input
-                      className="border p-2 w-[100px] bg-background rounded-lg"
-                      type="number"
-                    />
-                    <input
-                      className="border p-2 w-[50px] bg-background rounded-lg"
-                      type="number"
-                    />
-                  </div>
-                ))}
+            {workingSets.map((workingSet, index) => (
+              <div
+                className="col-span-2 flex items-center gap-[40px]"
+                key={index}
+              >
+                <Checkbox
+                  checked={workingSet.completed}
+                  onCheckedChange={(checked) =>
+                    handleCompletedChanged(checked as boolean, index)
+                  }
+                />
+                <p className="ml-4">{index + 1}</p>
+                <p className="w-36 ml-7">
+                  {exercise.workingSets && exercise.workingSets.length > 0
+                    ? exercise.workingSets[index].weight
+                    : ""}
+                </p>
+                <p className="mr-5">
+                  {exercise.workingSets && exercise.workingSets.length > 0
+                    ? exercise.workingSets[index].reps
+                    : ""}
+                </p>
+                <input
+                  className="border p-2 w-[100px] bg-background rounded-lg"
+                  type="number"
+                  onChange={(event) => handleWeightChange(event, index)}
+                  value={
+                    workingSet.weight === 0 && !workingSet.completed
+                      ? ""
+                      : workingSet.weight
+                  }
+                />
+                <input
+                  className="border p-2 w-[50px] bg-background rounded-lg"
+                  type="number"
+                  onChange={(event) => handleRepsChange(event, index)}
+                  value={
+                    workingSet.reps === 0 && !workingSet.completed
+                      ? ""
+                      : workingSet.reps
+                  }
+                />
+              </div>
+            ))}
           </div>
         </div>
         <DialogFooter>
