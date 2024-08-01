@@ -135,7 +135,6 @@ function ExerciseDialog({
                   className="border p-2 w-[100px] bg-background rounded-lg"
                   type="number"
                   onChange={(event) => handleWeightChange(event, index)}
-                  defaultValue={""}
                   value={
                     workingSet.weight === 0 && !workingSet.completed
                       ? ""

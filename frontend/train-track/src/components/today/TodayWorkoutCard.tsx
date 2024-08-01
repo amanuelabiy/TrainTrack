@@ -3,6 +3,8 @@ import { useLoaderData } from "react-router-dom";
 import WorkoutsCarousel from "./WorkoutsCarousel";
 import { useState } from "react";
 import InProgressWorkout from "./InProgressWorkout";
+import { toast } from "react-toastify";
+import * as WorkoutsApi from "@/network/workout_api";
 
 export interface TodayWorkout extends WorkoutResponse {
   workingOut: boolean;
@@ -37,6 +39,46 @@ function TodayWorkoutCard() {
     );
   };
 
+  const handleInProgressSaveClick = async (savedWorkout: TodayWorkout) => {
+    try {
+      const updatedExercises = savedWorkout.exercises.map((exercise) => {
+        if (exercise.workingSets) {
+          const allSetsCompleted = exercise.workingSets.every(
+            (workingSet) => workingSet.completed
+          );
+
+          return { ...exercise, completed: allSetsCompleted };
+        }
+
+        return exercise;
+      });
+
+      const updatedWorkout = { ...savedWorkout, exercises: updatedExercises };
+      const { workingOut, ...updatedWorkoutData } = updatedWorkout;
+
+      await WorkoutsApi.updateWorkout(updatedWorkoutData);
+
+      setWorkoutsForTheDay((prevWorkouts) =>
+        prevWorkouts.map((workout) =>
+          workout._id === savedWorkout._id
+            ? { ...updatedWorkout, workingOut: false }
+            : workout
+        )
+      );
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error &&
+        "message" in error &&
+        typeof error.message === "string"
+      ) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error has occurred");
+      }
+    }
+  };
+
   const startedWorkout = checkForStartedWorkout();
 
   return (
@@ -49,6 +91,7 @@ function TodayWorkoutCard() {
           <InProgressWorkout
             workout={startedWorkout}
             handleCancelClick={handleCancelClick}
+            handleInProgressSaveClick={handleInProgressSaveClick}
           />
         ) : (
           <WorkoutsCarousel

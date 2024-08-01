@@ -14,11 +14,13 @@ import { toast } from "react-toastify";
 interface InProgressWorkoutProps {
   workout: TodayWorkout;
   handleCancelClick: (cancelWorkout: TodayWorkout) => void;
+  handleInProgressSaveClick: (displayedWorkout: TodayWorkout) => void;
 }
 
 function InProgressWorkout({
   workout,
   handleCancelClick,
+  handleInProgressSaveClick,
 }: InProgressWorkoutProps) {
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null
@@ -26,6 +28,9 @@ function InProgressWorkout({
 
   const [displayedWorkout, setDisplayedWorkout] =
     useState<TodayWorkout>(workout);
+
+  const [displayedWorkoutCompletion, setDisplayedWorkoutCompletion] =
+    useState<number>(calcWorkoutCompletion(displayedWorkout));
 
   useEffect(() => {
     setDisplayedWorkout(workout);
@@ -44,9 +49,21 @@ function InProgressWorkout({
           : displayedExercise
       );
 
+      const updatedExercises = newExercises.map((exercise) => {
+        if (exercise.workingSets) {
+          const allSetsCompleted = exercise.workingSets.every(
+            (workingSet) => workingSet.completed
+          );
+
+          return { ...exercise, completed: allSetsCompleted };
+        }
+
+        return exercise;
+      });
+
       const updatedDisplayWorkout = {
         ...displayedWorkout,
-        exercises: newExercises,
+        exercises: updatedExercises,
       };
 
       const { workingOut, ...displayedWorkoutData } = updatedDisplayWorkout;
@@ -54,14 +71,37 @@ function InProgressWorkout({
       await WorkoutsApi.updateWorkout(displayedWorkoutData);
 
       setDisplayedWorkout(updatedDisplayWorkout);
+
+      setDisplayedWorkoutCompletion(
+        calcWorkoutCompletion(updatedDisplayWorkout)
+      );
     } catch (error) {
-      toast.error("error");
+      if (
+        typeof error === "object" &&
+        error &&
+        "message" in error &&
+        typeof error.message === "string"
+      ) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error has occurred");
+      }
     }
   };
 
   return (
     <div>
-      <h1 className="ml-[8px]">{displayedWorkout.workoutName}</h1>
+      <div className="flex">
+        <h1 className="ml-[8px]">{displayedWorkout.workoutName}</h1>
+        <p className="ml-auto mr-[50px]">
+          <span
+            className="inline-flex h-6 w-6 rounded-full bg-green-600 opacity-100"
+            style={{
+              animation: "blink 1s linear infinite",
+            }}
+          ></span>
+        </p>
+      </div>
       <Card className="w-[90%] h-[600px] border-none flex flex-col justify-between bg-transparent">
         <CardContent className="flex-items aspect-video items-center justify-center p-3">
           {displayedWorkout.exercises.map((exercise, index) => (
@@ -91,7 +131,7 @@ function InProgressWorkout({
             {calcWorkoutCompletion(displayedWorkout)}% Completed
           </label>
           <Progress
-            value={calcWorkoutCompletion(displayedWorkout)}
+            value={displayedWorkoutCompletion}
             className="w-full h-[5px]"
           />
         </div>
@@ -106,7 +146,12 @@ function InProgressWorkout({
           >
             Cancel Workout
           </Button>
-          <Button className="align-center w-56">Save Workout</Button>
+          <Button
+            className="align-center w-56"
+            onClick={() => handleInProgressSaveClick(displayedWorkout)}
+          >
+            Save Workout
+          </Button>
         </div>
       </Card>
       {selectedExercise && (

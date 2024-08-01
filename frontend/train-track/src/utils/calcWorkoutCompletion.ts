@@ -15,5 +15,5 @@ export function calcWorkoutCompletion(
 
   const completedRatio = (completedExercises / totalExercises) * 100;
 
-  return completedRatio;
+  return Math.round(completedRatio);
 }
