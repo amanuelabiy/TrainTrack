@@ -212,20 +212,7 @@ function AddWorkoutCard({
                   }
                   autoComplete="off"
                 />
-                <div className="flex gap-3">
-                  <Input
-                    id={`exercise-completed-${index}`}
-                    type="checkbox"
-                    className="w-4 h-4"
-                    checked={exercise.completed}
-                    onChange={(e) =>
-                      handleExerciseChange(index, "completed", e.target.checked)
-                    }
-                  />
-                  <Label htmlFor={`exercise-completed-${index}`}>
-                    Mark as Complete
-                  </Label>
-                </div>
+
                 <Button
                   className="w-full mx-auto"
                   type="button"

@@ -64,13 +64,7 @@ function WorkoutCard({
                 <div className="flex-1 text-right mr-[50px]">
                   <p>{exercise.sets}</p>
                 </div>
-                <div className="w-[1.25rem] flex justify-center">
-                  {exercise.completed ? (
-                    <FaCheckCircle className="text-primary text-[1.25rem]" />
-                  ) : (
-                    <div className="text-[1.25rem]" />
-                  )}
-                </div>
+                <div className="w-[1.25rem] flex justify-center"></div>
               </div>
             ))}
           </CardContent>

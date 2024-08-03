@@ -1,10 +1,16 @@
 import { WorkoutResponse } from "@/types/workoutTypes";
 import { useLoaderData } from "react-router-dom";
 import WorkoutsCarousel from "./WorkoutsCarousel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InProgressWorkout from "./InProgressWorkout";
 import { toast } from "react-toastify";
 import * as WorkoutsApi from "@/network/workout_api";
+import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setTodaysWorkouts } from "@/features/todaysWorkout/todaysWorkoutSlice";
+import { RootState } from "@/store";
+import { selectHasStartedWorkout } from "@/features/selectors/selectors";
+import { useSelector } from "react-redux";
 
 export interface TodayWorkout extends WorkoutResponse {
   workingOut: boolean;
@@ -12,32 +18,24 @@ export interface TodayWorkout extends WorkoutResponse {
 
 function TodayWorkoutCard() {
   const workoutsForTheDayData = useLoaderData() as WorkoutResponse[];
+  const dispatch = useAppDispatch();
 
-  const [workoutsForTheDay, setWorkoutsForTheDay] = useState(
-    workoutsForTheDayData.map((workout) => ({ ...workout, workingOut: false }))
+  useEffect(() => {
+    dispatch(
+      setTodaysWorkouts(
+        workoutsForTheDayData.map((workout) => ({
+          ...workout,
+          workingOut: false,
+        }))
+      )
+    );
+  }, [dispatch, workoutsForTheDayData]);
+
+  const todaysWorkouts = useAppSelector(
+    (state: RootState) => state.todaysWorkoutState.workoutsForToday
   );
 
-  const startWorkout = (workoutId: string) => {
-    setWorkoutsForTheDay((prevWorkouts) =>
-      prevWorkouts.map((workout) =>
-        workout._id === workoutId ? { ...workout, workingOut: true } : workout
-      )
-    );
-  };
-
-  const checkForStartedWorkout = () => {
-    return workoutsForTheDay.find((workout) => workout.workingOut);
-  };
-
-  const handleCancelClick = (cancelWorkout: TodayWorkout) => {
-    setWorkoutsForTheDay((prevWorkouts) =>
-      prevWorkouts.map((workout) =>
-        workout._id === cancelWorkout._id
-          ? { ...cancelWorkout, workingOut: false }
-          : workout
-      )
-    );
-  };
+  const hasStartedWorkout = useSelector(selectHasStartedWorkout);
 
   const handleInProgressSaveClick = async (savedWorkout: TodayWorkout) => {
     try {
@@ -58,13 +56,7 @@ function TodayWorkoutCard() {
 
       await WorkoutsApi.updateWorkout(updatedWorkoutData);
 
-      setWorkoutsForTheDay((prevWorkouts) =>
-        prevWorkouts.map((workout) =>
-          workout._id === savedWorkout._id
-            ? { ...updatedWorkout, workingOut: false }
-            : workout
-        )
-      );
+      endWorkout(updatedWorkout._id);
     } catch (error) {
       if (
         typeof error === "object" &&
@@ -79,25 +71,18 @@ function TodayWorkoutCard() {
     }
   };
 
-  const startedWorkout = checkForStartedWorkout();
-
   return (
     <div className="mt-10">
       <h1 className="text-[18px] font-bold tracking-tight mb-3 ml-[8px]">
         Workout Log
       </h1>
-      {workoutsForTheDay.length > 0 ? (
-        startedWorkout ? (
+      {todaysWorkouts && todaysWorkouts.length > 0 ? (
+        hasStartedWorkout ? (
           <InProgressWorkout
-            workout={startedWorkout}
-            handleCancelClick={handleCancelClick}
             handleInProgressSaveClick={handleInProgressSaveClick}
           />
         ) : (
-          <WorkoutsCarousel
-            workouts={workoutsForTheDay}
-            startWorkout={startWorkout}
-          />
+          <WorkoutsCarousel />
         )
       ) : (
         <div>no workouts for today</div>

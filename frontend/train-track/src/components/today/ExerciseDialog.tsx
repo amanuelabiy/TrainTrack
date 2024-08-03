@@ -13,16 +13,19 @@ import { TodayWorkout } from "./TodayWorkoutCard";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
+import { useAppDispatch } from "@/hooks";
+import { handleDialogSaveClick } from "@/features/todaysWorkout/todaysWorkoutSlice";
+import { toast } from "react-toastify";
 
 interface ExerciseDialogProps {
   isOpen: boolean;
   onClose: () => void;
   exercise: Exercise;
   workout: TodayWorkout;
-  handleDialogSaveClick: (
-    exercise: Exercise,
-    workingSets: WorkingSet[]
-  ) => void;
+  // handleDialogSaveClick: (
+  //   exercise: Exercise,
+  //   workingSets: WorkingSet[]
+  // ) => void;
 }
 
 function ExerciseDialog({
@@ -30,9 +33,10 @@ function ExerciseDialog({
   onClose,
   exercise,
   workout,
-  handleDialogSaveClick,
-}: ExerciseDialogProps) {
+}: // handleDialogSaveClick,
+ExerciseDialogProps) {
   const numberOfWorkingSets = exercise.sets;
+  const dispatch = useAppDispatch();
 
   const [workingSets, setWorkingSets] = useState(
     Array.isArray(exercise.workingSets) && exercise.workingSets.length > 0
@@ -90,8 +94,21 @@ function ExerciseDialog({
     handleInputChange(index, "completed", checked);
   };
 
-  const handleSaveClick = (workingSets: WorkingSet[]) => {
-    handleDialogSaveClick(exercise, workingSets);
+  const handleSaveClick = async (workingSets: WorkingSet[]) => {
+    try {
+      await dispatch(handleDialogSaveClick({ exercise, workingSets }));
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error &&
+        "message" in error &&
+        typeof error.message === "string"
+      ) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error has occurred");
+      }
+    }
   };
 
   return (

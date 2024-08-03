@@ -10,97 +10,38 @@ import ExerciseDialog from "./ExerciseDialog";
 import { calcExerciseCompletion } from "@/utils/calcExerciseCompletion";
 import * as WorkoutsApi from "@/network/workout_api";
 import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { RootState } from "@/store";
+import { endTodaysWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";
 
 interface InProgressWorkoutProps {
-  workout: TodayWorkout;
-  handleCancelClick: (cancelWorkout: TodayWorkout) => void;
   handleInProgressSaveClick: (displayedWorkout: TodayWorkout) => void;
 }
 
 function InProgressWorkout({
-  workout,
-  handleCancelClick,
   handleInProgressSaveClick,
 }: InProgressWorkoutProps) {
+  const dispatch = useAppDispatch();
+  const displayedWorkout = useAppSelector(
+    (state: RootState) => state.todaysWorkoutState.startedWorkout
+  );
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null
   );
 
-  const [displayedWorkout, setDisplayedWorkout] =
-    useState<TodayWorkout>(workout);
-
   const [displayedWorkoutCompletion, setDisplayedWorkoutCompletion] =
-    useState<number>(calcWorkoutCompletion(displayedWorkout));
+    useState<number>(
+      displayedWorkout ? calcWorkoutCompletion(displayedWorkout) : 0
+    );
 
-  useEffect(() => {
-    setDisplayedWorkout(workout);
-  }, [workout]);
-
-  console.log(displayedWorkout);
-
-  const handleDialogSaveClick = async (
-    exercise: Exercise,
-    workingSets: WorkingSet[]
-  ) => {
-    try {
-      const newExercises = displayedWorkout.exercises.map((displayedExercise) =>
-        displayedExercise._id === exercise._id
-          ? { ...displayedExercise, workingSets }
-          : displayedExercise
-      );
-
-      const updatedExercises = newExercises.map((exercise) => {
-        if (exercise.workingSets) {
-          const allSetsCompleted = exercise.workingSets.every(
-            (workingSet) => workingSet.completed
-          );
-
-          return { ...exercise, completed: allSetsCompleted };
-        }
-
-        return exercise;
-      });
-
-      const updatedDisplayWorkout = {
-        ...displayedWorkout,
-        exercises: updatedExercises,
-      };
-
-      const { workingOut, ...displayedWorkoutData } = updatedDisplayWorkout;
-
-      await WorkoutsApi.updateWorkout(displayedWorkoutData);
-
-      setDisplayedWorkout(updatedDisplayWorkout);
-
-      setDisplayedWorkoutCompletion(
-        calcWorkoutCompletion(updatedDisplayWorkout)
-      );
-    } catch (error) {
-      if (
-        typeof error === "object" &&
-        error &&
-        "message" in error &&
-        typeof error.message === "string"
-      ) {
-        toast.error(error.message);
-      } else {
-        toast.error("An unknown error has occurred");
-      }
-    }
-  };
+  if (!displayedWorkout) {
+    return <div>Error</div>;
+  }
 
   return (
     <div>
       <div className="flex">
         <h1 className="ml-[8px]">{displayedWorkout.workoutName}</h1>
-        <p className="ml-auto mr-[50px]">
-          <span
-            className="inline-flex h-6 w-6 rounded-full bg-green-600 opacity-100"
-            style={{
-              animation: "blink 1s linear infinite",
-            }}
-          ></span>
-        </p>
       </div>
       <Card className="w-[90%] h-[600px] border-none flex flex-col justify-between bg-transparent">
         <CardContent className="flex-items aspect-video items-center justify-center p-3">
@@ -140,15 +81,15 @@ function InProgressWorkout({
             variant="outline"
             className="align-center w-56"
             onClick={() => {
-              handleCancelClick(displayedWorkout);
-              setDisplayedWorkout(workout);
+              dispatch(endTodaysWorkout(displayedWorkout));
+              // setDisplayedWorkout(workout);
             }}
           >
             Cancel Workout
           </Button>
           <Button
             className="align-center w-56"
-            onClick={() => handleInProgressSaveClick(displayedWorkout)}
+            onClick={() => console.log("save")}
           >
             Save Workout
           </Button>
@@ -160,7 +101,7 @@ function InProgressWorkout({
           onClose={() => setSelectedExercise(null)}
           exercise={selectedExercise}
           workout={displayedWorkout}
-          handleDialogSaveClick={handleDialogSaveClick}
+          // handleDialogSaveClick={handleDialogSaveClick}
         />
       )}
     </div>
