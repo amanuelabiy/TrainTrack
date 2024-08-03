@@ -169,7 +169,7 @@ const todaysWorkoutSlice = createSlice({
   // },
 });
 
-export const { setTodaysWorkouts, startTodaysWorkout, endTodaysWorkout } =
+export const { setTodaysWorkouts, startTodaysWorkout, endTodaysWorkout, handleDialogSaveClick } =
   todaysWorkoutSlice.actions;
 
 export default todaysWorkoutSlice.reducer;
