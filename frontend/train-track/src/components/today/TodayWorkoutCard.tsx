@@ -9,6 +9,11 @@ import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { setTodaysWorkouts } from "@/features/todaysWorkout/todaysWorkoutSlice";
 import { RootState } from "@/store";
+<<<<<<< HEAD
+=======
+import { selectHasStartedWorkout } from "@/features/selectors/selectors";
+import { useSelector } from "react-redux";
+>>>>>>> d02ec083bbf4646011656886e2cbc64a831ab2aa
 
 export interface TodayWorkout extends WorkoutResponse {
   workingOut: boolean;
@@ -33,6 +38,7 @@ function TodayWorkoutCard() {
     (state: RootState) => state.todaysWorkoutState.workoutsForToday
   );
 
+<<<<<<< HEAD
   console.log("Todays workouts are", todaysWorkouts);
 
   const startWorkout = (workoutId: string) => {
@@ -64,6 +70,9 @@ function TodayWorkoutCard() {
       )
     );
   };
+=======
+  const hasStartedWorkout = useSelector(selectHasStartedWorkout);
+>>>>>>> d02ec083bbf4646011656886e2cbc64a831ab2aa
 
   const handleInProgressSaveClick = async (savedWorkout: TodayWorkout) => {
     try {
@@ -99,25 +108,22 @@ function TodayWorkoutCard() {
     }
   };
 
-  const startedWorkout = checkForStartedWorkout();
-
   return (
     <div className="mt-10">
       <h1 className="text-[18px] font-bold tracking-tight mb-3 ml-[8px]">
         Workout Log
       </h1>
       {todaysWorkouts && todaysWorkouts.length > 0 ? (
+<<<<<<< HEAD
         startedWorkout ? (
+=======
+        hasStartedWorkout ? (
+>>>>>>> d02ec083bbf4646011656886e2cbc64a831ab2aa
           <InProgressWorkout
-            workout={startedWorkout}
-            handleCancelClick={handleCancelClick}
             handleInProgressSaveClick={handleInProgressSaveClick}
           />
         ) : (
-          <WorkoutsCarousel
-            workouts={workoutsForTheDay}
-            startWorkout={startWorkout}
-          />
+          <WorkoutsCarousel />
         )
       ) : (
         <div>no workouts for today</div>
