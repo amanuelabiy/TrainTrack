@@ -93,14 +93,6 @@ function InProgressWorkout({
     <div>
       <div className="flex">
         <h1 className="ml-[8px]">{displayedWorkout.workoutName}</h1>
-        <p className="ml-auto mr-[50px]">
-          <span
-            className="inline-flex h-6 w-6 rounded-full bg-green-600 opacity-100"
-            style={{
-              animation: "blink 1s linear infinite",
-            }}
-          ></span>
-        </p>
       </div>
       <Card className="w-[90%] h-[600px] border-none flex flex-col justify-between bg-transparent">
         <CardContent className="flex-items aspect-video items-center justify-center p-3">

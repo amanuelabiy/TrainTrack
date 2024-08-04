@@ -1,10 +1,14 @@
 import { WorkoutResponse } from "@/types/workoutTypes";
 import { useLoaderData } from "react-router-dom";
 import WorkoutsCarousel from "./WorkoutsCarousel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InProgressWorkout from "./InProgressWorkout";
 import { toast } from "react-toastify";
 import * as WorkoutsApi from "@/network/workout_api";
+import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import { setTodaysWorkouts } from "@/features/todaysWorkout/todaysWorkoutSlice";
+import { RootState } from "@/store";
 
 export interface TodayWorkout extends WorkoutResponse {
   workingOut: boolean;
@@ -12,15 +16,37 @@ export interface TodayWorkout extends WorkoutResponse {
 
 function TodayWorkoutCard() {
   const workoutsForTheDayData = useLoaderData() as WorkoutResponse[];
+  const dispatch = useAppDispatch();
 
-  const [workoutsForTheDay, setWorkoutsForTheDay] = useState(
-    workoutsForTheDayData.map((workout) => ({ ...workout, workingOut: false }))
+  useEffect(() => {
+    dispatch(
+      setTodaysWorkouts(
+        workoutsForTheDayData.map((workout) => ({
+          ...workout,
+          workingOut: false,
+        }))
+      )
+    );
+  }, [dispatch, workoutsForTheDayData]);
+
+  const todaysWorkouts = useAppSelector(
+    (state: RootState) => state.todaysWorkoutState.workoutsForToday
   );
+
+  console.log("Todays workouts are", todaysWorkouts);
 
   const startWorkout = (workoutId: string) => {
     setWorkoutsForTheDay((prevWorkouts) =>
       prevWorkouts.map((workout) =>
         workout._id === workoutId ? { ...workout, workingOut: true } : workout
+      )
+    );
+  };
+
+  const endWorkout = (workoutId: string) => {
+    setWorkoutsForTheDay((prevWorkouts) =>
+      prevWorkouts.map((workout) =>
+        workout._id === workoutId ? { ...workout, workingOut: false } : workout
       )
     );
   };
@@ -58,13 +84,7 @@ function TodayWorkoutCard() {
 
       await WorkoutsApi.updateWorkout(updatedWorkoutData);
 
-      setWorkoutsForTheDay((prevWorkouts) =>
-        prevWorkouts.map((workout) =>
-          workout._id === savedWorkout._id
-            ? { ...updatedWorkout, workingOut: false }
-            : workout
-        )
-      );
+      endWorkout(updatedWorkout._id);
     } catch (error) {
       if (
         typeof error === "object" &&
@@ -86,7 +106,7 @@ function TodayWorkoutCard() {
       <h1 className="text-[18px] font-bold tracking-tight mb-3 ml-[8px]">
         Workout Log
       </h1>
-      {workoutsForTheDay.length > 0 ? (
+      {todaysWorkouts && todaysWorkouts.length > 0 ? (
         startedWorkout ? (
           <InProgressWorkout
             workout={startedWorkout}
