@@ -1,10 +1,11 @@
 import mongoose, { InferSchemaType, model, Schema, Types } from "mongoose";
 import { IWorkout } from "./Workout";
 import { workoutSchema } from "./Workout";
+import { WorkoutData } from "types/types";
 
 interface IWorkoutHistory {
   _id?: Types.ObjectId;
-  workouts: IWorkout[];
+  workouts: Types.ObjectId[];
   createdAt?: string;
   updatedAt?: string;
   _v: number;
@@ -13,7 +14,7 @@ interface IWorkoutHistory {
 
 const workoutHistorySchema: Schema<IWorkoutHistory> = new Schema(
   {
-    workouts: [workoutSchema],
+    workouts: [{ type: Schema.Types.ObjectId, ref: "Workout", required: true }],
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }

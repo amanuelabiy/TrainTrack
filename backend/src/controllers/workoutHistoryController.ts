@@ -4,9 +4,10 @@ import { assertIsDefined } from "../utils/assertIsDefined";
 import * as workoutHistoryService from "../services/workoutHistoryService";
 import { WorkoutData } from "types/types";
 import createHttpError from "http-errors";
+import { Types } from "mongoose";
 
 interface WorkoutHistoryBody {
-  workout: WorkoutData;
+  workoutIds: Types.ObjectId[];
 }
 
 export const addWorkoutToHistory: RequestHandler<
@@ -15,20 +16,21 @@ export const addWorkoutToHistory: RequestHandler<
   WorkoutHistoryBody,
   unknown
 > = async (req, res, next) => {
-  const { workout } = req.body;
+  const { workoutIds } = req.body;
   const userId = req.session.userId;
 
-  if (!workout) {
+  if (!workoutIds) {
     createHttpError(400, "Missing or Invalid Workout History Fields");
   }
 
   try {
     assertIsDefined(userId);
-    const newAddedWorkout = await workoutHistoryService.addWorkoutToHistory({
-      userId,
-      workout,
-    });
-    res.status(201).json(newAddedWorkout);
+    const updatedWorkoutHistory =
+      await workoutHistoryService.addWorkoutToHistory({
+        userId,
+        workoutIds,
+      });
+    res.status(201).json(updatedWorkoutHistory);
   } catch (error) {
     next(error);
   }
