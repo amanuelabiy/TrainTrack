@@ -14,7 +14,7 @@ interface IWorkout {
   userId: mongoose.Types.ObjectId;
 }
 
-const workoutSchema: Schema<IWorkout> = new Schema(
+export const workoutSchema: Schema<IWorkout> = new Schema(
   {
     workoutName: { type: String, required: true },
     exercises: [

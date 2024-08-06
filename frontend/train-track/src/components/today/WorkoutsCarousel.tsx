@@ -14,6 +14,7 @@ import { type WorkoutResponse } from "@/types/workoutTypes";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { RootState } from "@/store";
 import { startTodaysWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";
+import RestartWorkoutBtn from "./RestartWorkoutBtn";
 
 function WorkoutsCarousel() {
   const dispatch = useAppDispatch();
@@ -57,14 +58,18 @@ function WorkoutsCarousel() {
                     />
                   </div>
                   <div className="text-center mb-10">
-                    <Button
-                      className="align-center w-56"
-                      onClick={() => dispatch(startTodaysWorkout(workout))}
-                    >
-                      {calcWorkoutCompletion(workout) === 0
-                        ? "Start Workout"
-                        : "Continue Workout"}
-                    </Button>
+                    {calcWorkoutCompletion(workout) === 100 ? (
+                      <RestartWorkoutBtn workout={workout} />
+                    ) : (
+                      <Button
+                        className="align-center w-56"
+                        onClick={() => dispatch(startTodaysWorkout(workout))}
+                      >
+                        {calcWorkoutCompletion(workout) === 0
+                          ? "Start Workout"
+                          : "Continue Workout"}
+                      </Button>
+                    )}
                   </div>
                 </Card>
               </CarouselItem>

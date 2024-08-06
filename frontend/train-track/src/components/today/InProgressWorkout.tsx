@@ -1,38 +1,33 @@
 import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
 import { Card, CardContent } from "../ui/card";
 import { Progress } from "../ui/progress";
-import { type TodayWorkout } from "./TodayWorkoutCard";
 import { LuDumbbell } from "react-icons/lu";
 import { Button } from "../ui/button";
-import { type Exercise, type WorkingSet } from "@/types/workoutTypes";
-import { useEffect, useState } from "react";
+import { type Exercise } from "@/types/workoutTypes";
+import { useState } from "react";
 import ExerciseDialog from "./ExerciseDialog";
 import { calcExerciseCompletion } from "@/utils/calcExerciseCompletion";
-import * as WorkoutsApi from "@/network/workout_api";
-import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { RootState } from "@/store";
-import { endTodaysWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";
-
-interface InProgressWorkoutProps {
-  handleInProgressSaveClick: (displayedWorkout: TodayWorkout) => void;
-}
-
-function InProgressWorkout({
+import {
+  endTodaysWorkout,
   handleInProgressSaveClick,
-}: InProgressWorkoutProps) {
+} from "@/features/todaysWorkout/todaysWorkoutSlice";
+
+function InProgressWorkout() {
   const dispatch = useAppDispatch();
   const displayedWorkout = useAppSelector(
     (state: RootState) => state.todaysWorkoutState.startedWorkout
   );
+
+  console.log("The current todaysworkout state is", displayedWorkout);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null
   );
 
-  const [displayedWorkoutCompletion, setDisplayedWorkoutCompletion] =
-    useState<number>(
-      displayedWorkout ? calcWorkoutCompletion(displayedWorkout) : 0
-    );
+  const handleSaveClick = async () => {
+    await dispatch(handleInProgressSaveClick());
+  };
 
   if (!displayedWorkout) {
     return <div>Error</div>;
@@ -72,7 +67,7 @@ function InProgressWorkout({
             {calcWorkoutCompletion(displayedWorkout)}% Completed
           </label>
           <Progress
-            value={displayedWorkoutCompletion}
+            value={calcWorkoutCompletion(displayedWorkout)}
             className="w-full h-[5px]"
           />
         </div>
@@ -82,15 +77,11 @@ function InProgressWorkout({
             className="align-center w-56"
             onClick={() => {
               dispatch(endTodaysWorkout(displayedWorkout));
-              // setDisplayedWorkout(workout);
             }}
           >
             Cancel Workout
           </Button>
-          <Button
-            className="align-center w-56"
-            onClick={() => console.log("save")}
-          >
+          <Button className="align-center w-56" onClick={handleSaveClick}>
             Save Workout
           </Button>
         </div>
@@ -101,7 +92,6 @@ function InProgressWorkout({
           onClose={() => setSelectedExercise(null)}
           exercise={selectedExercise}
           workout={displayedWorkout}
-          // handleDialogSaveClick={handleDialogSaveClick}
         />
       )}
     </div>

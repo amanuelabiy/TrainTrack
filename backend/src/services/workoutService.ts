@@ -18,8 +18,6 @@ interface WorkoutData {
 export const createWorkout = async (workoutData: WorkoutData) => {
   const { userId, workoutName, exercises, day, notes } = workoutData;
 
-  console.log(workoutData);
-
   try {
     const exerciseDocs = await Promise.all(
       exercises.map(async (exercise: any) => {

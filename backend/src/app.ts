@@ -3,8 +3,8 @@ import cors from "cors";
 import express from "express";
 import exerciseRoutes from "./routes/exercise";
 import workoutRoutes from "./routes/workout";
+import workoutHistoryRoutes from "./routes/workoutHistory";
 import userRoutes from "./routes/user";
-import workoutSplitRoutes from "./routes/workoutSplit";
 import errorHandler from "./middleware/errorHandler";
 import morgan from "morgan";
 import createHttpError from "http-errors";
@@ -45,7 +45,7 @@ app.use("/api/exercises", exerciseRoutes);
 
 app.use("/api/workouts", workoutRoutes);
 
-app.use("/api/workoutSplit", workoutSplitRoutes);
+app.use("/api/workoutHistory", workoutHistoryRoutes);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found"));

@@ -22,10 +22,6 @@ interface ExerciseDialogProps {
   onClose: () => void;
   exercise: Exercise;
   workout: TodayWorkout;
-  // handleDialogSaveClick: (
-  //   exercise: Exercise,
-  //   workingSets: WorkingSet[]
-  // ) => void;
 }
 
 function ExerciseDialog({
@@ -33,8 +29,7 @@ function ExerciseDialog({
   onClose,
   exercise,
   workout,
-}: // handleDialogSaveClick,
-ExerciseDialogProps) {
+}: ExerciseDialogProps) {
   const numberOfWorkingSets = exercise.sets;
   const dispatch = useAppDispatch();
 
@@ -94,21 +89,8 @@ ExerciseDialogProps) {
     handleInputChange(index, "completed", checked);
   };
 
-  const handleSaveClick = async (workingSets: WorkingSet[]) => {
-    try {
-      await dispatch(handleDialogSaveClick({ exercise, workingSets }));
-    } catch (error) {
-      if (
-        typeof error === "object" &&
-        error &&
-        "message" in error &&
-        typeof error.message === "string"
-      ) {
-        toast.error(error.message);
-      } else {
-        toast.error("An unknown error has occurred");
-      }
-    }
+  const handleSaveClick = (workingSets: WorkingSet[]) => {
+    dispatch(handleDialogSaveClick({ exercise, workingSets }));
   };
 
   return (
@@ -150,7 +132,7 @@ ExerciseDialogProps) {
                 </p>
                 <input
                   className="border p-2 w-[100px] bg-background rounded-lg"
-                  type="number"
+                  type="numeric"
                   onChange={(event) => handleWeightChange(event, index)}
                   value={
                     workingSet.weight === 0 && !workingSet.completed
@@ -160,7 +142,7 @@ ExerciseDialogProps) {
                 />
                 <input
                   className="border p-2 w-[50px] bg-background rounded-lg"
-                  type="number"
+                  type="numeric"
                   onChange={(event) => handleRepsChange(event, index)}
                   value={
                     workingSet.reps === 0 && !workingSet.completed

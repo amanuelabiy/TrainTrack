@@ -82,14 +82,6 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "upcoming",
-        element: (
-          <ProtectedRoute>
-            <Upcoming />
-          </ProtectedRoute>
-        ),
-      },
-      {
         path: "statistics",
         element: (
           <ProtectedRoute>

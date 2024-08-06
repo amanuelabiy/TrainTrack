@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import UserModel from "../models/User";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
+import WorkoutHistoryModel from "../models/WorkoutHistory";
 import * as userService from "../services/userService";
 
 export const getAuthenticatedUser = async (
@@ -54,13 +55,29 @@ export const signUp = async (signUpInfo: SignUpBodyInfo) => {
 
   const passwordHashed = await bcrypt.hash(passwordRaw, 10);
 
-  const newUser = await UserModel.create({
-    username: username,
-    email: email,
-    password: passwordHashed,
-  });
+  try {
+    const newUser = await UserModel.create({
+      username: username,
+      email: email,
+      password: passwordHashed,
+    });
 
-  return newUser;
+    const workoutHistory = new WorkoutHistoryModel({
+      userId: newUser._id,
+      workouts: [],
+    });
+
+    await workoutHistory.save();
+    return newUser;
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof createHttpError.HttpError) {
+      throw error;
+    }
+
+    throw createHttpError(500, "An unexpected user service error has occured");
+  }
 };
 
 export const login = async (
@@ -71,19 +88,29 @@ export const login = async (
     throw createHttpError(400, "Login Parameters missing!");
   }
 
-  const user = await UserModel.findOne({ username: username })
-    .select("+password +email")
-    .exec();
+  try {
+    const user = await UserModel.findOne({ username: username })
+      .select("+password +email")
+      .exec();
 
-  if (!user) {
-    throw createHttpError(401, "Invalid credentials");
+    if (!user) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      throw createHttpError(401, "Invalid Credentials");
+    }
+
+    return user;
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof createHttpError.HttpError) {
+      throw error;
+    }
+
+    throw createHttpError(500, "An unexpected user service error has occured");
   }
-
-  const passwordMatch = await bcrypt.compare(password, user.password);
-
-  if (!passwordMatch) {
-    throw createHttpError(401, "Invalid Credentials");
-  }
-
-  return user;
 };
