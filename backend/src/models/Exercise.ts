@@ -5,8 +5,9 @@ import {
   Types,
   model,
 } from "mongoose";
+import { WorkingSet } from "../types/types";
 
-const workingSetSchema = new Schema(
+export const workingSetSchema = new Schema(
   {
     weight: { type: Number, required: true },
     reps: { type: Number, required: true },
@@ -14,12 +15,6 @@ const workingSetSchema = new Schema(
   },
   { _id: false }
 );
-
-interface WorkingSet {
-  weight: number;
-  reps: number;
-  completed: boolean;
-}
 
 interface IExercise {
   _id?: Types.ObjectId;

@@ -18,6 +18,17 @@ interface WorkoutData {
 export const createWorkout = async (workoutData: WorkoutData) => {
   const { userId, workoutName, exercises, day, notes } = workoutData;
 
+  const existingWorkout = await WorkoutModel.findOne({
+    workoutName: workoutName,
+  });
+
+  if (existingWorkout) {
+    throw createHttpError(
+      400,
+      `Workout with the name "${workoutName}" already exists.`
+    );
+  }
+
   try {
     const exerciseDocs = await Promise.all(
       exercises.map(async (exercise: any) => {

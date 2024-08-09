@@ -22,3 +22,9 @@ export interface WorkoutData {
   __v?: number;
   isEditing?: boolean;
 }
+
+export interface WorkingSet {
+  weight: number;
+  reps: number;
+  completed: boolean;
+}

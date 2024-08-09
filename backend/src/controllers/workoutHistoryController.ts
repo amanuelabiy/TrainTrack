@@ -1,13 +1,12 @@
 import { RequestHandler } from "express";
-import { IWorkout } from "models/Workout";
 import { assertIsDefined } from "../utils/assertIsDefined";
 import * as workoutHistoryService from "../services/workoutHistoryService";
-import { WorkoutData } from "types/types";
 import createHttpError from "http-errors";
 import { Types } from "mongoose";
+import { IWorkoutHistoryWorkout } from "models/WorkoutHistoryWorkout";
 
 interface WorkoutHistoryBody {
-  workoutIds: Types.ObjectId[];
+  workouts: IWorkoutHistoryWorkout[];
 }
 
 export const addWorkoutToHistory: RequestHandler<
@@ -16,10 +15,10 @@ export const addWorkoutToHistory: RequestHandler<
   WorkoutHistoryBody,
   unknown
 > = async (req, res, next) => {
-  const { workoutIds } = req.body;
+  const { workouts } = req.body;
   const userId = req.session.userId;
 
-  if (!workoutIds) {
+  if (!workouts) {
     createHttpError(400, "Missing or Invalid Workout History Fields");
   }
 
@@ -28,7 +27,7 @@ export const addWorkoutToHistory: RequestHandler<
     const updatedWorkoutHistory =
       await workoutHistoryService.addWorkoutToHistory({
         userId,
-        workoutIds,
+        workouts,
       });
     res.status(201).json(updatedWorkoutHistory);
   } catch (error) {

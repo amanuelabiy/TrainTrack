@@ -1,32 +1,34 @@
 import createHttpError from "http-errors";
 import WorkoutHistoryModel from "../models/WorkoutHistory";
 import mongoose, { Types } from "mongoose";
-import { WorkoutData } from "types/types";
 import WorkoutModel, { IWorkout } from "../models/Workout";
 import ExerciseModel from "../models/Exercise";
+import { IWorkoutHistoryWorkout } from "../models/WorkoutHistoryWorkout";
 
 interface WorkoutToAdd {
   userId: Types.ObjectId;
-  workoutIds: Types.ObjectId[];
+  workouts: IWorkoutHistoryWorkout[];
 }
 
 export const addWorkoutToHistory = async (workoutToAdd: WorkoutToAdd) => {
-  const { userId, workoutIds } = workoutToAdd;
+  if (
+    !workoutToAdd ||
+    !workoutToAdd.workouts ||
+    workoutToAdd.workouts.length === 0
+  ) {
+    throw createHttpError(
+      400,
+      "Missing or Invalid Workout History Fields in Service"
+    );
+  }
+  const { userId, workouts } = workoutToAdd;
 
   try {
-    for (const workoutId of workoutIds) {
-      if (!mongoose.isValidObjectId(workoutId)) {
-        throw createHttpError(400, "Invalid workout Id for workout history");
-      }
-    }
-
-    const workouts: (IWorkout | null)[] = await Promise.all(
-      workoutIds.map(async (workoutId) => {
-        return await WorkoutModel.findById(workoutId)
-          .populate("exercises")
-          .exec();
-      })
-    );
+    // for (const workout of workouts) {
+    //   if (!mongoose.isValidObjectId(workout._id)) {
+    //     throw createHttpError(400, "Invalid workout Id for workout history");
+    //   }
+    // }
 
     const workoutsExist = workouts.every((workout) => workout !== null);
 
@@ -57,8 +59,10 @@ export const addWorkoutToHistory = async (workoutToAdd: WorkoutToAdd) => {
       throw createHttpError(404, "Workout history is not found for this user");
     }
 
-    for (const workoutId of workoutIds) {
-      workoutHistory.workouts.push(workoutId);
+    for (const workout of workouts) {
+      const workoutHistoryEntry = { ...workout, workoutId: workout._id };
+
+      workoutHistory.workouts.push(workoutHistoryEntry);
     }
 
     await workoutHistory.save();
