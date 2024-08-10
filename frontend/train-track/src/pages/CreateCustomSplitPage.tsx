@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useAppDispatch } from "@/hooks";
 import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
 import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
-import { useLoaderData } from "react-router-dom";
+import { type LoaderFunction, useLoaderData } from "react-router-dom";
 import * as WorkoutsApi from "@/network/workout_api";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";

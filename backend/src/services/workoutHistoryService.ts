@@ -11,24 +11,24 @@ interface WorkoutToAdd {
 }
 
 export const addWorkoutToHistory = async (workoutToAdd: WorkoutToAdd) => {
-  if (
-    !workoutToAdd ||
-    !workoutToAdd.workouts ||
-    workoutToAdd.workouts.length === 0
-  ) {
-    throw createHttpError(
-      400,
-      "Missing or Invalid Workout History Fields in Service"
-    );
-  }
-  const { userId, workouts } = workoutToAdd;
-
   try {
-    // for (const workout of workouts) {
-    //   if (!mongoose.isValidObjectId(workout._id)) {
-    //     throw createHttpError(400, "Invalid workout Id for workout history");
-    //   }
-    // }
+    if (
+      !workoutToAdd ||
+      !workoutToAdd.workouts ||
+      workoutToAdd.workouts.length === 0
+    ) {
+      throw createHttpError(
+        400,
+        "Missing or Invalid Workout History Fields in Service"
+      );
+    }
+    const { userId, workouts } = workoutToAdd;
+
+    for (const workout of workouts) {
+      if (!mongoose.isValidObjectId(workout._id)) {
+        throw createHttpError(400, "Invalid workout Id for workout history");
+      }
+    }
 
     const workoutsExist = workouts.every((workout) => workout !== null);
 

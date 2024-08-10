@@ -20,7 +20,6 @@ function InProgressWorkout() {
     (state: RootState) => state.todaysWorkoutState.startedWorkout
   );
 
-  console.log("The current todaysworkout state is", displayedWorkout);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(
     null
   );

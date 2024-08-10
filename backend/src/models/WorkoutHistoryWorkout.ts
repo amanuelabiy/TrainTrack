@@ -20,7 +20,7 @@ interface IWorkoutHistoryWorkout {
 
 const workoutHistoryWorkoutSchema: Schema<IWorkoutHistoryWorkout> = new Schema(
   {
-    workoutId: { type: Types.ObjectId, required: false },
+    workoutId: { type: Types.ObjectId, ref: "Workout", required: false },
     workoutName: { type: String, required: true },
     exercises: [workoutHistoryExerciseSchema],
     day: { type: String, enum: Object.values(Day), required: true },
@@ -31,11 +31,11 @@ const workoutHistoryWorkoutSchema: Schema<IWorkoutHistoryWorkout> = new Schema(
   { timestamps: true }
 );
 
-workoutHistoryWorkoutSchema.pre("save", function (next) {
-  if (!this.workoutId) {
-    this.workoutId = this._id;
-  }
-  next();
-});
+// workoutHistoryWorkoutSchema.pre("save", function (next) {
+//   if (!this.workoutId) {
+//     this.workoutId = this._id;
+//   }
+//   next();
+// });
 
 export { IWorkoutHistoryWorkout, workoutHistoryWorkoutSchema };
