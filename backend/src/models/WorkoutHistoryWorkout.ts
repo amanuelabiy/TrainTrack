@@ -6,36 +6,30 @@ import {
 } from "./WorkoutHistoryExercise";
 
 interface IWorkoutHistoryWorkout {
-  _id: Types.ObjectId;
+  _id?: Types.ObjectId;
   workoutId?: Types.ObjectId;
   workoutName: string;
   exercises: IWorkoutHistoryExercise[];
   day: Day;
   notes?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   __v?: number;
-  isEditing?: boolean;
+  userId: mongoose.Types.ObjectId;
 }
 
 const workoutHistoryWorkoutSchema: Schema<IWorkoutHistoryWorkout> = new Schema(
   {
-    workoutId: { type: Types.ObjectId, ref: "Workout", required: false },
+    workoutId: { type: Types.ObjectId, required: false },
     workoutName: { type: String, required: true },
     exercises: [workoutHistoryExerciseSchema],
     day: { type: String, enum: Object.values(Day), required: true },
     notes: { type: String, required: false },
-    createdAt: { type: String, required: false },
-    updatedAt: { type: String, required: false },
+    createdAt: { type: Date, required: false },
+    updatedAt: { type: Date, required: false },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );
-
-// workoutHistoryWorkoutSchema.pre("save", function (next) {
-//   if (!this.workoutId) {
-//     this.workoutId = this._id;
-//   }
-//   next();
-// });
 
 export { IWorkoutHistoryWorkout, workoutHistoryWorkoutSchema };

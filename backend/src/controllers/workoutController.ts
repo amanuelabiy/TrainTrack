@@ -46,9 +46,9 @@ export const createWorkout: RequestHandler<
 
 export const getWorkouts: RequestHandler = async (req, res, next) => {
   const userId = req.session.userId;
-  assertIsDefined(userId);
 
   try {
+    assertIsDefined(userId);
     const workouts = await workoutService.getWorkouts(userId);
     res.status(200).json(workouts);
   } catch (error) {
@@ -59,13 +59,12 @@ export const getWorkouts: RequestHandler = async (req, res, next) => {
 export const getWorkoutsForDay: RequestHandler = async (req, res, next) => {
   const userId = req.session.userId;
   const { day } = req.params;
-  assertIsDefined(userId);
-
-  if (!Object.values(Day).includes(day as Day)) {
-    throw next(createHttpError(400, "Invalid Day"));
-  }
 
   try {
+    assertIsDefined(userId);
+    if (!Object.values(Day).includes(day as Day)) {
+      throw next(createHttpError(400, "Invalid Day"));
+    }
     const workouts = await workoutService.getWorkoutsForDay(day as Day, userId);
 
     res.status(200).json(workouts);
@@ -81,9 +80,9 @@ export const getWorkout: RequestHandler<{ workoutId: string }> = async (
 ) => {
   const { workoutId } = req.params;
   const userId = req.session.userId;
-  assertIsDefined(userId);
 
   try {
+    assertIsDefined(userId);
     if (!mongoose.isValidObjectId(workoutId)) {
       throw createHttpError(400, "Invalid Workout Id");
     }
@@ -129,9 +128,9 @@ export const updateWorkout: RequestHandler<
   const newNotes = req.body.notes;
 
   const userId = req.session.userId;
-  assertIsDefined(userId);
 
   try {
+    assertIsDefined(userId);
     if (!mongoose.isValidObjectId(workoutId)) {
       throw createHttpError(400, "Invalid Workout Id");
     }
@@ -165,9 +164,9 @@ export const deleteWorkout: RequestHandler<{ workoutId: string }> = async (
 ) => {
   const { workoutId } = req.params;
   const userId = req.session.userId;
-  assertIsDefined(userId);
 
   try {
+    assertIsDefined(userId);
     if (!mongoose.isValidObjectId(workoutId)) {
       throw createHttpError(400, "Invalid Workout id");
     }
