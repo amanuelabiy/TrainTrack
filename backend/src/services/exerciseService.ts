@@ -19,7 +19,11 @@ export const createExercise = async (exerciseData: IExercise) => {
 
     if (workingSets) {
       for (const workingSet of workingSets) {
-        if (!workingSet.weight || !workingSet.reps || !workingSet.completed) {
+        if (
+          workingSet.weight === undefined ||
+          workingSet.reps === undefined ||
+          workingSet.completed === undefined
+        ) {
           throw createHttpError(
             400,
             "Missing or Invalid Working Set Exercise Fields"
@@ -66,23 +70,41 @@ export const getExercises = async () => {
 
 export const updateExercise = async (
   exerciseId: Types.ObjectId,
-  update: Partial<IExercise>
+  update: Partial<IExercise>,
+  workoutName: string | undefined
 ) => {
   if (!mongoose.isValidObjectId(exerciseId)) {
     throw createHttpError(400, "Invalid Exercise Id");
   }
 
-  const updatedExercise = await ExerciseModel.findByIdAndUpdate(
-    exerciseId,
-    update,
-    { new: true }
-  );
+  if (workoutName) {
+    const newUpdate = { ...update, workoutName: workoutName };
+    const updatedExercise = await ExerciseModel.findByIdAndUpdate(
+      exerciseId,
+      newUpdate,
+      { new: true }
+    );
 
-  if (!updateExercise) {
-    throw createHttpError(404, "Exercise not found");
+    if (!updatedExercise) {
+      throw createHttpError(404, "Exercise not found");
+    }
+
+    return updatedExercise;
+  } else {
+    const updatedExercise = await ExerciseModel.findByIdAndUpdate(
+      exerciseId,
+      update,
+      { new: true }
+    );
+
+    if (!updatedExercise) {
+      throw createHttpError(404, "Exercise not found");
+    }
+
+    await updatedExercise.save();
+
+    return updatedExercise;
   }
-
-  return updatedExercise;
 };
 
 export const deleteExercise = async (exerciseId: Types.ObjectId) => {

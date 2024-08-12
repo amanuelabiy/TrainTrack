@@ -3,7 +3,7 @@ import mongoose, { Types } from "mongoose";
 import WorkoutModel from "../models/Workout";
 import Workout, { IWorkout } from "../models/Workout";
 import { updateExercise, createExercise } from "./exerciseService";
-import ExerciseModel, { IExercise } from "models/Exercise";
+import ExerciseModel, { IExercise } from "../models/Exercise";
 import { deleteExercise } from "./exerciseService";
 import { Day } from "types/types";
 
@@ -148,7 +148,8 @@ export const updateWorkout = async (
         if (exercise._id) {
           const updatedExercise = await updateExercise(
             exercise._id as Types.ObjectId,
-            exercise
+            exercise,
+            workoutName
           );
           if (updatedExercise) {
             return updatedExercise._id.toString();
@@ -180,6 +181,20 @@ export const updateWorkout = async (
       (id) => new Types.ObjectId(id)
     );
   }
+
+  for (const exerciseId of workout.exercises) {
+    const exercise = await ExerciseModel.findById(exerciseId).exec();
+    if (exercise && exercise.workingSets) {
+      const allWorkingSetsComplete = exercise.workingSets.every(
+        (workingSet) => workingSet.completed
+      );
+
+      exercise.completed = allWorkingSetsComplete;
+      await exercise.save();
+    }
+  }
+
+  workout.updatedAt = new Date().toISOString();
 
   await workout.save();
 

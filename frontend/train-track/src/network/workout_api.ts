@@ -3,6 +3,7 @@ import {
   type WorkoutResponse,
   type AllWorkoutReponse,
   Day,
+  type UpdatedWorkout,
 } from "@/types/workoutTypes";
 
 export const productionUrl = "http://localhost:5001/api";
@@ -60,7 +61,7 @@ export async function createWorkout(
 }
 
 export async function updateWorkout(
-  workout: WorkoutResponse
+  workout: UpdatedWorkout
 ): Promise<WorkoutResponse> {
   const { _id } = workout;
   const response = await fetchData(`${productionUrl}/workouts/${_id}`, {
@@ -82,30 +83,4 @@ export async function deleteWorkout(
   });
 
   return response;
-}
-
-export async function addWorkoutToHistory(workout: WorkoutResponse) {
-  if (!Array.isArray(workout)) {
-    const workoutArray = [];
-    workoutArray.push(workout);
-    const response = await fetchData(`${productionUrl}/workoutHistory`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(workoutArray),
-    });
-
-    return response;
-  } else {
-    const response = await fetchData(`${productionUrl}/workoutHistory`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(workout),
-    });
-
-    return response;
-  }
 }

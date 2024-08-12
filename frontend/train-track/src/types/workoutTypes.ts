@@ -39,6 +39,10 @@ export interface WorkoutResponse {
   isEditing?: boolean;
 }
 
+export interface UpdatedWorkout extends Workout {
+  _id: string;
+}
+
 export interface WorkoutPlanState {
   workouts: Workout[];
   loading: boolean;

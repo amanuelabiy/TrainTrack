@@ -1,12 +1,14 @@
 import { useAppDispatch } from "@/hooks";
 import { Button } from "../ui/button";
 import { startTodaysWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";
+import { handleRestartWorkoutClick } from "@/features/todaysWorkout/todaysWorkoutSlice";
 import { TodayWorkout } from "./TodayWorkoutCard";
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
   DialogTitle,
+  DialogDescription,
 } from "../ui/dialog";
 import stopHand from "@/assets/pngtree-palm-hand-stop-icon-signal-png-image_5284600.png";
 
@@ -17,8 +19,8 @@ interface RestartWorkoutBtnProps {
 function RestartWorkoutBtn({ workout }: RestartWorkoutBtnProps) {
   const dispatch = useAppDispatch();
 
-  const handleWorkoutRestart = () => {
-    dispatch(startTodaysWorkout(workout));
+  const handleWorkoutRestart = async () => {
+    await dispatch(handleRestartWorkoutClick(workout));
   };
   return (
     <div className="flex justify-center gap-4 mb-10">
@@ -37,9 +39,9 @@ function RestartWorkoutBtn({ workout }: RestartWorkoutBtnProps) {
           </div>
           <div className="flex flex-col items-center">
             <p className="font-bold">Are you sure you want to restart?</p>
-            <p className="text-xs">
+            <DialogDescription>
               (Restarting will lose all current data for this workout)
-            </p>
+            </DialogDescription>
           </div>
           <div className="flex justify-center gap-4">
             <DialogTrigger asChild>

@@ -3,6 +3,7 @@ import AddWorkoutBtn from "@/components/createcustomsplit/AddWorkoutBtn";
 import AddWorkoutCard from "@/components/createcustomsplit/AddWorkoutCard";
 import {
   type AllWorkoutReponse,
+  UpdatedWorkout,
   Workout,
   WorkoutResponse,
 } from "@/types/workoutTypes";
@@ -103,13 +104,13 @@ function CreateCustomSplitPage() {
     }
   };
 
-  const handleSaveWorkout = async (updatedWorkout: WorkoutResponse) => {
+  const handleSaveWorkout = async (updatedWorkout: UpdatedWorkout) => {
     try {
       const response = await WorkoutsApi.updateWorkout(updatedWorkout);
       setWorkouts((prevWorkouts) =>
         prevWorkouts.map((workout) =>
           workout._id === updatedWorkout._id
-            ? { ...workout, ...updatedWorkout, isEditing: false }
+            ? { ...workout, ...response, isEditing: false }
             : workout
         )
       );
@@ -117,6 +118,8 @@ function CreateCustomSplitPage() {
         variant: "success",
         title: "Saved Workout",
       });
+
+      console.log("Saved Workout is", response);
     } catch (error) {
       console.error("Error updating workout", error);
     }

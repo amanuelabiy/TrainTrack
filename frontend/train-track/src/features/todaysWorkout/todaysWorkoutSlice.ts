@@ -7,6 +7,7 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import * as WorkoutsApi from "@/network/workout_api";
+import * as WorkoutHistoryApi from "@/network/workoutHistory_api";
 import { toast } from "react-toastify";
 import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
 import { useAppDispatch } from "@/hooks";
@@ -73,7 +74,29 @@ const addWorkoutToHistory = createAsyncThunk(
       displayedWorkoutData
     );
 
-    await WorkoutsApi.addWorkoutToHistory(displayedWorkoutData);
+    await WorkoutHistoryApi.addWorkoutToHistory(displayedWorkoutData);
+  }
+);
+
+export const handleRestartWorkoutClick = createAsyncThunk(
+  "todaysWorkout/restartWorkout",
+  async (workout: TodayWorkout, { getState, dispatch }) => {
+    const state = getState() as RootState;
+    dispatch(startTodaysWorkout(workout));
+    dispatch(getSecondLatestWorkoutForRestart(workout));
+
+    // Start Workout
+    // Fetch Second Latest Workout
+    // If Second Latest Workout is not null then set set.startedWorkout state to this value. If it is null then set the working sets to their default value
+    // Delete the latest workout from workoutHistory
+    // Set the workout inside of workout collection to second latest workout. If it is null then set working sets to their default value
+  }
+);
+
+export const getSecondLatestWorkoutForRestart = createAsyncThunk(
+  "todaysWorkout/getSecondLatestWorkout",
+  async (workout: TodayWorkout) => {
+    // const secondLatestWorkoutForRestart;
   }
 );
 
@@ -94,6 +117,8 @@ const todaysWorkoutSlice = createSlice({
         : null;
 
       state.startedWorkout = action.payload;
+
+      console.log("Started Workout State:", state.startedWorkout);
     },
     endTodaysWorkout: (state, action: PayloadAction<TodayWorkout>) => {
       state.workoutsForToday = state.workoutsForToday
