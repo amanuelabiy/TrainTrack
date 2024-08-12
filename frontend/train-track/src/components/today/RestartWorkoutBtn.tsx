@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@/hooks";
 import { Button } from "../ui/button";
 import { startTodaysWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";
-import { handleRestartWorkoutClick } from "@/features/todaysWorkout/todaysWorkoutSlice";
+import { handleRestartWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";
 import { TodayWorkout } from "./TodayWorkoutCard";
 import {
   Dialog,
@@ -20,7 +20,7 @@ function RestartWorkoutBtn({ workout }: RestartWorkoutBtnProps) {
   const dispatch = useAppDispatch();
 
   const handleWorkoutRestart = async () => {
-    await dispatch(handleRestartWorkoutClick(workout));
+    await dispatch(handleRestartWorkout(workout));
   };
   return (
     <div className="flex justify-center gap-4 mb-10">

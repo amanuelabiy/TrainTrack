@@ -1,6 +1,10 @@
-import { TodayWorkout } from "@/components/today/TodayWorkoutCard";
-import { RootState } from "@/store";
-import { type Exercise, type WorkingSet } from "@/types/workoutTypes";
+import { type TodayWorkout } from "@/components/today/TodayWorkoutCard";
+import { type AppDispatch, type RootState } from "@/store";
+import {
+  type WorkoutResponse,
+  type Exercise,
+  type WorkingSet,
+} from "@/types/workoutTypes";
 import {
   createAsyncThunk,
   createSlice,
@@ -10,13 +14,13 @@ import * as WorkoutsApi from "@/network/workout_api";
 import * as WorkoutHistoryApi from "@/network/workoutHistory_api";
 import { toast } from "react-toastify";
 import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
-import { useAppDispatch } from "@/hooks";
 
 interface TodaysWorkoutState {
   workoutsForToday: TodayWorkout[] | null;
   startedWorkout: TodayWorkout | null;
   loading: boolean;
   error: string | null;
+  restartedWorkout: TodayWorkout | null;
 }
 
 type ExerciseWithWorkingSet = {
@@ -29,6 +33,7 @@ const initialState: TodaysWorkoutState = {
   startedWorkout: null,
   loading: false,
   error: null,
+  restartedWorkout: null,
 };
 
 export const handleInProgressSaveClick = createAsyncThunk(
@@ -78,25 +83,33 @@ const addWorkoutToHistory = createAsyncThunk(
   }
 );
 
-export const handleRestartWorkoutClick = createAsyncThunk(
-  "todaysWorkout/restartWorkout",
-  async (workout: TodayWorkout, { getState, dispatch }) => {
+export const handleRestartWorkout = createAsyncThunk(
+  "todaysWorkout/handleRestartWorkout",
+  async (workout: TodayWorkout, { dispatch, getState }) => {
     const state = getState() as RootState;
-    dispatch(startTodaysWorkout(workout));
-    dispatch(getSecondLatestWorkoutForRestart(workout));
+    await WorkoutHistoryApi.deleteLatestWorkoutFromHistory(workout);
+    await dispatch(getSecondLatestWorkoutForRestart(workout));
 
-    // Start Workout
-    // Fetch Second Latest Workout
-    // If Second Latest Workout is not null then set set.startedWorkout state to this value. If it is null then set the working sets to their default value
-    // Delete the latest workout from workoutHistory
-    // Set the workout inside of workout collection to second latest workout. If it is null then set working sets to their default value
+    const updatedState = getState() as RootState;
+
+    if (updatedState.todaysWorkoutState.restartedWorkout) {
+      const restartedWorkout = updatedState.todaysWorkoutState.restartedWorkout;
+      const { workingOut, ...workoutData } = restartedWorkout;
+
+      dispatch(updateStateForAWorkout(restartedWorkout));
+
+      await WorkoutsApi.updateWorkout(workoutData);
+    }
   }
 );
 
 export const getSecondLatestWorkoutForRestart = createAsyncThunk(
   "todaysWorkout/getSecondLatestWorkout",
   async (workout: TodayWorkout) => {
-    // const secondLatestWorkoutForRestart;
+    const secondLatestWorkout =
+      await WorkoutHistoryApi.getSecondLatestWorkoutForRestart(workout);
+
+    return { workout: workout, secondLatestWorkout: secondLatestWorkout };
   }
 );
 
@@ -168,6 +181,13 @@ const todaysWorkoutSlice = createSlice({
 
       state.startedWorkout = updatedStartedWorkout;
     },
+    updateStateForAWorkout: (state, action: PayloadAction<TodayWorkout>) => {
+      state.workoutsForToday = state.workoutsForToday
+        ? state.workoutsForToday.map((workout) =>
+            workout._id === action.payload._id ? { ...action.payload } : workout
+          )
+        : null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -206,6 +226,79 @@ const todaysWorkoutSlice = createSlice({
         state.error =
           action.error.message || "Failed to Add Workout to History";
         toast.error(state.error);
+      })
+      .addCase(getSecondLatestWorkoutForRestart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSecondLatestWorkoutForRestart.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            workout: WorkoutResponse;
+            secondLatestWorkout: WorkoutResponse | null;
+          }>
+        ) => {
+          state.loading = false;
+
+          const { workout, secondLatestWorkout } = action.payload;
+
+          let newWorkoutWithId: TodayWorkout | null = null;
+
+          if (secondLatestWorkout) {
+            const resetExercises = secondLatestWorkout.exercises.map(
+              (exercise) => {
+                const workingSets = exercise.workingSets?.map((workingSet) => ({
+                  weight: workingSet.weight,
+                  reps: workingSet.reps,
+                  completed: false,
+                }));
+
+                return {
+                  ...exercise,
+                  workingSets: workingSets,
+                  completed: false,
+                };
+              }
+            );
+
+            const newWorkout: TodayWorkout = {
+              ...secondLatestWorkout,
+              exercises: resetExercises,
+              workingOut: true,
+            };
+
+            const { workoutId, ...workoutData } = newWorkout;
+
+            newWorkoutWithId = { ...workoutData, _id: workoutId };
+
+            state.startedWorkout = newWorkoutWithId;
+            state.restartedWorkout = newWorkoutWithId;
+          } else if (secondLatestWorkout === null) {
+            const resetExercises = workout.exercises.map((exercise) => {
+              const workingSets = Array.from({ length: exercise.sets }, () => ({
+                weight: 0,
+                reps: 0,
+                completed: false,
+              }));
+              return { ...exercise, workingSets, completed: false };
+            });
+            newWorkoutWithId = {
+              ...workout,
+              exercises: resetExercises,
+              workingOut: true,
+            };
+
+            state.startedWorkout = newWorkoutWithId;
+            state.restartedWorkout = newWorkoutWithId;
+          }
+        }
+      )
+      .addCase(getSecondLatestWorkoutForRestart.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Failed to Get Second Latest Workout";
       });
   },
 });
@@ -215,6 +308,7 @@ export const {
   startTodaysWorkout,
   endTodaysWorkout,
   handleDialogSaveClick,
+  updateStateForAWorkout,
 } = todaysWorkoutSlice.actions;
 
 export default todaysWorkoutSlice.reducer;
