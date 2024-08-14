@@ -4,6 +4,7 @@ import {
   type WorkoutResponse,
   type Exercise,
   type WorkingSet,
+  type WorkoutHistoryResponse,
 } from "@/types/workoutTypes";
 import {
   createAsyncThunk,
@@ -48,7 +49,10 @@ export const handleInProgressSaveClick = createAsyncThunk(
 
     const { workingOut, ...displayedWorkoutData } = savedWorkout;
 
-    await WorkoutsApi.updateWorkout(displayedWorkoutData);
+    const { createdAt, updatedAt, __v, isEditing, ...updatedWorkoutData } =
+      displayedWorkoutData;
+
+    await WorkoutsApi.updateWorkout(updatedWorkoutData);
 
     if (calcWorkoutCompletion(savedWorkout) === 100) {
       toast.success("Workout Complete! 🥳");
@@ -86,7 +90,6 @@ const addWorkoutToHistory = createAsyncThunk(
 export const handleRestartWorkout = createAsyncThunk(
   "todaysWorkout/handleRestartWorkout",
   async (workout: TodayWorkout, { dispatch, getState }) => {
-    const state = getState() as RootState;
     await WorkoutHistoryApi.deleteLatestWorkoutFromHistory(workout);
     await dispatch(getSecondLatestWorkoutForRestart(workout));
 
@@ -94,11 +97,15 @@ export const handleRestartWorkout = createAsyncThunk(
 
     if (updatedState.todaysWorkoutState.restartedWorkout) {
       const restartedWorkout = updatedState.todaysWorkoutState.restartedWorkout;
+      console.log("Restarted workout state", restartedWorkout);
       const { workingOut, ...workoutData } = restartedWorkout;
 
       dispatch(updateStateForAWorkout(restartedWorkout));
 
-      await WorkoutsApi.updateWorkout(workoutData);
+      const { createdAt, updatedAt, __v, isEditing, ...updatedWorkoutData } =
+        workoutData;
+
+      await WorkoutsApi.updateWorkout(updatedWorkoutData);
     }
   }
 );
@@ -237,39 +244,49 @@ const todaysWorkoutSlice = createSlice({
           state,
           action: PayloadAction<{
             workout: WorkoutResponse;
-            secondLatestWorkout: WorkoutResponse | null;
+            secondLatestWorkout: WorkoutHistoryResponse | null;
           }>
         ) => {
           state.loading = false;
 
           const { workout, secondLatestWorkout } = action.payload;
 
-          let newWorkoutWithId: TodayWorkout | null = null;
+          let newWorkoutWithId = null;
 
-          if (secondLatestWorkout) {
-            const resetExercises = secondLatestWorkout.exercises.map(
-              (exercise) => {
-                const workingSets = exercise.workingSets?.map((workingSet) => ({
-                  weight: workingSet.weight,
-                  reps: workingSet.reps,
-                  completed: false,
-                }));
+          if (secondLatestWorkout !== null) {
+            const resetExercises = secondLatestWorkout.exercises
+              .map((exercise) => {
+                if (exercise.workingSets) {
+                  const workingSets = exercise.workingSets.map(
+                    (workingSet) => ({
+                      ...workingSet,
+                      completed: false,
+                    })
+                  );
 
-                return {
-                  ...exercise,
-                  workingSets: workingSets,
-                  completed: false,
-                };
-              }
-            );
+                  return {
+                    ...exercise,
+                    workingSets: workingSets,
+                    completed: false,
+                  };
+                }
+
+                return undefined;
+              })
+              .filter((exercise) => exercise !== undefined);
+
+            const { workoutId, userId, ...secondLatestWorkoutData } =
+              secondLatestWorkout;
 
             const newWorkout: TodayWorkout = {
-              ...secondLatestWorkout,
+              ...secondLatestWorkoutData,
               exercises: resetExercises,
               workingOut: true,
             };
 
-            const { workoutId, ...workoutData } = newWorkout;
+            console.log("New Workout is", newWorkout);
+
+            const { ...workoutData } = newWorkout;
 
             newWorkoutWithId = { ...workoutData, _id: workoutId };
 
@@ -299,6 +316,19 @@ const todaysWorkoutSlice = createSlice({
         state.loading = false;
         state.error =
           action.error.message || "Failed to Get Second Latest Workout";
+      })
+      .addCase(handleRestartWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(handleRestartWorkout.fulfilled, (state) => {
+        state.loading = false;
+        state.restartedWorkout = null;
+        console.log("Restart Complete");
+      })
+      .addCase(handleRestartWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to Get Restart Workout";
       });
   },
 });

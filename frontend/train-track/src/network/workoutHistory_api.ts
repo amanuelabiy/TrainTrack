@@ -1,4 +1,7 @@
-import { type WorkoutResponse } from "@/types/workoutTypes";
+import {
+  type WorkoutHistoryResponse,
+  type WorkoutResponse,
+} from "@/types/workoutTypes";
 import { productionUrl } from "./workout_api";
 import { fetchData } from "./workout_api";
 import { type TodayWorkout } from "@/components/today/TodayWorkoutCard";
@@ -31,7 +34,7 @@ export async function addWorkoutToHistory(workout: WorkoutResponse) {
 
 export async function getSecondLatestWorkoutForRestart(
   workout: TodayWorkout
-): Promise<WorkoutResponse | null> {
+): Promise<WorkoutHistoryResponse | null> {
   const { _id } = workout;
   const response = await fetchData(
     `${productionUrl}/workoutHistory/second-latest/${_id}`,

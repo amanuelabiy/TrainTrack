@@ -39,6 +39,11 @@ export interface WorkoutResponse {
   isEditing?: boolean;
 }
 
+export interface WorkoutHistoryResponse extends WorkoutResponse {
+  workoutId: string;
+  userId: string;
+}
+
 export interface UpdatedWorkout extends Workout {
   _id: string;
 }
