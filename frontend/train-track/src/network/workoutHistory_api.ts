@@ -1,4 +1,5 @@
 import {
+  type HistoryResponse,
   type WorkoutHistoryResponse,
   type WorkoutResponse,
 } from "@/types/workoutTypes";
@@ -36,6 +37,7 @@ export async function getSecondLatestWorkoutForRestart(
   workout: TodayWorkout
 ): Promise<WorkoutHistoryResponse | null> {
   const { _id } = workout;
+
   const response = await fetchData(
     `${productionUrl}/workoutHistory/second-latest/${_id}`,
     {
@@ -56,6 +58,14 @@ export async function deleteLatestWorkoutFromHistory(
       method: "PATCH",
     }
   );
+}
 
-  console.log("Response is", response);
+export async function fetchWorkoutHistory(): Promise<HistoryResponse[]> {
+  const response = await fetchData(`${productionUrl}/workoutHistory`, {
+    method: "GET",
+  });
+
+  console.log("Resposne is", response);
+
+  return response;
 }

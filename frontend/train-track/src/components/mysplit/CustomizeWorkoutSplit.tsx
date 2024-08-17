@@ -20,7 +20,6 @@ function CustomizeWorkoutSplit({
       </p>
       <Separator className="mt-5" />
       <div className="flex flex-col sm:flex-row mt-[115px] gap-10 items-center justify-center w-full max-w-screen-lg mx-auto">
-        <AddExercises />
         <ViewWeeklySplit handlePageSwitch={handlePageSwitch} />
       </div>
     </main>

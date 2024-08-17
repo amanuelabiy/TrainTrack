@@ -105,8 +105,6 @@ export const getWorkoutHistory = async (userId: Types.ObjectId) => {
       throw createHttpError(404, "Workout history is not found for this user");
     }
 
-    console.log("workout history in service is", workoutHistory);
-
     return workoutHistory;
   } catch (error) {
     console.error(error);

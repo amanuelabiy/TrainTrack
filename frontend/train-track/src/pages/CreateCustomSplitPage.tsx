@@ -1,30 +1,15 @@
 import AddWorkoutBtn from "@/components/createcustomsplit/AddWorkoutBtn";
-
 import AddWorkoutCard from "@/components/createcustomsplit/AddWorkoutCard";
-import {
-  type AllWorkoutReponse,
-  UpdatedWorkout,
-  Workout,
-  WorkoutResponse,
-} from "@/types/workoutTypes";
+import { UpdatedWorkout, Workout, WorkoutResponse } from "@/types/workoutTypes";
 import { useState } from "react";
-import { useAppDispatch } from "@/hooks";
-import { addWorkout } from "@/features/workoutPlan/workoutPlanSlice";
 import WorkoutCard from "@/components/createcustomsplit/WorkoutCard";
-import { type LoaderFunction, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import * as WorkoutsApi from "@/network/workout_api";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 
-export const loader: LoaderFunction = async (): Promise<AllWorkoutReponse> => {
-  const response = await WorkoutsApi.fetchWorkouts();
-
-  return response;
-};
-
 function CreateCustomSplitPage() {
   const [showAddWorkoutCard, setShowAddWorkoutCard] = useState(false);
-  const dispatch = useAppDispatch();
   const { toast } = useToast();
 
   const workoutsData = useLoaderData() as WorkoutResponse[];
@@ -47,7 +32,7 @@ function CreateCustomSplitPage() {
     }
     try {
       const response = await WorkoutsApi.createWorkout(newWorkout);
-      dispatch(addWorkout(response));
+
       setWorkouts((prevWorkouts) => [
         ...prevWorkouts,
         { ...response, isEditing: false },
@@ -58,7 +43,7 @@ function CreateCustomSplitPage() {
       });
       setShowAddWorkoutCard(false);
     } catch (error) {
-      toast({ variant: "destructive", title: "Error adding workout" });
+      toast({ variant: "destructive", title: `${error}` });
       console.error("Error adding workout", error);
     }
   };
@@ -118,8 +103,6 @@ function CreateCustomSplitPage() {
         variant: "success",
         title: "Saved Workout",
       });
-
-      console.log("Saved Workout is", response);
     } catch (error) {
       console.error("Error updating workout", error);
     }

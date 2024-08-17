@@ -22,6 +22,7 @@ interface TodaysWorkoutState {
   loading: boolean;
   error: string | null;
   restartedWorkout: TodayWorkout | null;
+  inProgressWorkouts: TodayWorkout[] | null;
 }
 
 type ExerciseWithWorkingSet = {
@@ -35,6 +36,7 @@ const initialState: TodaysWorkoutState = {
   loading: false,
   error: null,
   restartedWorkout: null,
+  inProgressWorkouts: null,
 };
 
 export const handleInProgressSaveClick = createAsyncThunk(
@@ -90,7 +92,6 @@ const addWorkoutToHistory = createAsyncThunk(
 export const handleRestartWorkout = createAsyncThunk(
   "todaysWorkout/handleRestartWorkout",
   async (workout: TodayWorkout, { dispatch, getState }) => {
-    await WorkoutHistoryApi.deleteLatestWorkoutFromHistory(workout);
     await dispatch(getSecondLatestWorkoutForRestart(workout));
 
     const updatedState = getState() as RootState;
@@ -106,6 +107,8 @@ export const handleRestartWorkout = createAsyncThunk(
         workoutData;
 
       await WorkoutsApi.updateWorkout(updatedWorkoutData);
+
+      await WorkoutHistoryApi.deleteLatestWorkoutFromHistory(workout);
     }
   }
 );
@@ -212,6 +215,9 @@ const todaysWorkoutSlice = createSlice({
                 workout._id === action.payload._id ? action.payload : workout
               )
             : null;
+
+          // if (calcWorkoutCompletion(action.payload) > 0) {
+          // }
         }
       )
       .addCase(handleInProgressSaveClick.rejected, (state, action) => {
@@ -251,6 +257,8 @@ const todaysWorkoutSlice = createSlice({
 
           const { workout, secondLatestWorkout } = action.payload;
 
+          console.log("Second latest workout is", secondLatestWorkout);
+
           let newWorkoutWithId = null;
 
           if (secondLatestWorkout !== null) {
@@ -283,8 +291,6 @@ const todaysWorkoutSlice = createSlice({
               exercises: resetExercises,
               workingOut: true,
             };
-
-            console.log("New Workout is", newWorkout);
 
             const { ...workoutData } = newWorkout;
 

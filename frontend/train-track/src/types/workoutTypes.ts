@@ -44,14 +44,17 @@ export interface WorkoutHistoryResponse extends WorkoutResponse {
   userId: string;
 }
 
-export interface UpdatedWorkout extends Workout {
+export interface HistoryResponse {
   _id: string;
+  workouts: WorkoutHistoryResponse[];
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
-export interface WorkoutPlanState {
-  workouts: Workout[];
-  loading: boolean;
-  error: string | null;
+export interface UpdatedWorkout extends Workout {
+  _id: string;
 }
 
 export enum Day {

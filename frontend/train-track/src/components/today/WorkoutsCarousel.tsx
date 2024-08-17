@@ -10,7 +10,6 @@ import { LuDumbbell } from "react-icons/lu";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
-import { type WorkoutResponse } from "@/types/workoutTypes";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { RootState } from "@/store";
 import { startTodaysWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";

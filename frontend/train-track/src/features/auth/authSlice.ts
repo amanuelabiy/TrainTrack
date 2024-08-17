@@ -6,16 +6,23 @@ import {
 import * as UserApi from "@/network/user_api";
 import { type User } from "@/types/user";
 import { LoginForm, RegisterForm } from "@/types/accountTypes";
+import {
+  type HistoryResponse,
+  type WorkoutHistoryResponse,
+} from "@/types/workoutTypes";
+import * as WorkoutHistoryApi from "@/network/workoutHistory_api";
 
 interface AuthState {
   user: User | null;
   status: "idle" | "loading" | "succeeded" | "failed";
+  workoutHistory: WorkoutHistoryResponse[];
   error: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
   status: "idle",
+  workoutHistory: [],
   error: null,
 };
 
@@ -50,6 +57,20 @@ export const fetchAuthenticatedUser = createAsyncThunk<User | null>(
       return response;
     } catch (error) {
       return null;
+    }
+  }
+);
+
+export const fetchWorkoutHistory = createAsyncThunk<HistoryResponse[]>(
+  "auth/fetchWorkoutHistory",
+  async () => {
+    try {
+      const response = await WorkoutHistoryApi.fetchWorkoutHistory();
+      return response;
+    } catch (error) {
+      throw new Error(
+        "Failed to fetch workout history: " + (error as Error).message
+      );
     }
   }
 );
@@ -114,6 +135,27 @@ const authSlice = createSlice({
         state.status = "failed";
         state.error =
           action.error.message || "Failed to fetch authenticated user";
+      })
+      .addCase(fetchWorkoutHistory.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(
+        fetchWorkoutHistory.fulfilled,
+        (state, action: PayloadAction<HistoryResponse[]>) => {
+          state.status = "succeeded";
+          const workouts = [];
+          for (const workoutHistory of action.payload) {
+            for (const workout of workoutHistory.workouts) {
+              workouts.push(workout);
+            }
+          }
+          state.workoutHistory = workouts;
+        }
+      )
+      .addCase(fetchWorkoutHistory.rejected, (state, action) => {
+        state.status = "failed";
+        state.error =
+          action.error.message || "Failed to fetch workout history for user";
       });
   },
 });

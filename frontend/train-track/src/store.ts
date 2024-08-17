@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import themeReducer from "./features/theme/themeSlice";
-import workoutPlanReducer from "./features/workoutPlan/workoutPlanSlice";
+import workoutPlanReducer from "./features/workoutHistory/workoutHistorySlice";
 import authReducer from "./features/auth/authSlice";
 import todaysWorkoutReducer from "./features/todaysWorkout/todaysWorkoutSlice";
 
 export const store = configureStore({
   reducer: {
-    workoutPlanState: workoutPlanReducer,
+    workoutHistory: workoutPlanReducer,
     themeState: themeReducer,
     auth: authReducer,
     todaysWorkoutState: todaysWorkoutReducer,

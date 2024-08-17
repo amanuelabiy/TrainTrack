@@ -8,13 +8,13 @@ import {
   Register,
   Settings,
   Today,
-  Upcoming,
   Statistics,
 } from "./pages";
 import CreateCustomSplitPage from "./pages/CreateCustomSplitPage";
 
-import { loader as workoutsLoader } from "./pages/CreateCustomSplitPage";
-import { loader as todayWorkoutLoader } from "./pages/Today";
+import { workoutsLoader } from "./utils/loaders";
+import { todayWorkoutLoader } from "./utils/loaders";
+import { workoutHistoryLoader } from "./utils/loaders";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { useEffect, useState } from "react";
 import { fetchAuthenticatedUser } from "./features/auth/authSlice";
@@ -88,6 +88,7 @@ const router = createBrowserRouter([
             <Statistics />
           </ProtectedRoute>
         ),
+        loader: workoutHistoryLoader,
       },
     ],
   },

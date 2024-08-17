@@ -205,8 +205,6 @@ function AddWorkoutCard({
 
       setWorkoutForWarning(updatedWorkoutWithWorkingSets);
 
-      console.log("The workout to save is", updatedWorkout);
-
       if (!sameExerciseSets) {
         setIsDifferentSetsDialogOpen(true);
       } else {

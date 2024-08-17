@@ -103,13 +103,6 @@ export const login = async (
       throw createHttpError(401, "Invalid Credentials");
     }
 
-    const workoutHistory = new WorkoutHistoryModel({
-      userId: user._id,
-      workouts: [],
-    });
-
-    await workoutHistory.save();
-
     return user;
   } catch (error) {
     console.error(error);

@@ -14,6 +14,8 @@ import { FaCheckCircle } from "react-icons/fa";
 import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
 import { useState } from "react";
 import WorkoutDeletionWarning from "./WorkoutDeletionWarning";
+import { useAppSelector } from "@/hooks";
+import { RootState } from "@/store";
 interface WorkoutCardProps {
   workout: WorkoutResponse;
   handleEditClick: (workout: WorkoutResponse) => void;
@@ -51,6 +53,18 @@ function WorkoutCard({
     setShowDeletionWarning(false);
   };
 
+  const workoutsForToday = useAppSelector(
+    (state: RootState) => state.todaysWorkoutState.workoutsForToday
+  );
+
+  let workoutIsToday = false;
+
+  if (workoutsForToday) {
+    workoutIsToday = workoutsForToday.some(
+      (todaysWorkout) => todaysWorkout._id === workout._id
+    );
+  }
+
   return (
     <>
       <Card className="w-[350px] h-[370px] overflow-hidden border-primary relative mt-5">
@@ -84,15 +98,33 @@ function WorkoutCard({
             </CardContent>
           </div>
         </div>
-
         <CardFooter className="grid grid-cols-2 gap-2">
           <Button variant="destructive" onClick={handleDelete}>
             Delete
           </Button>
-          <Button className="ml-3" onClick={() => handleEditClick(workout)}>
-            <Pencil size={16} className="mr-2" />
-            Edit Workout
-          </Button>
+          {workoutsForToday ? (
+            workoutIsToday ? (
+              <Button
+                className="ml-3"
+                onClick={() => handleEditClick(workout)}
+                disabled
+              >
+                <Pencil size={16} className="mr-2" />
+                Edit Workout
+              </Button>
+            ) : (
+              <Button className="ml-3" onClick={() => handleEditClick(workout)}>
+                <Pencil size={16} className="mr-2" />
+                Edit Workout
+              </Button>
+            )
+          ) : (
+            <Button className="ml-3" onClick={() => handleEditClick(workout)}>
+              <Pencil size={16} className="mr-2" />
+              Edit Workout
+            </Button>
+          )}
+
           <div className="mt-1">
             <CardDescription className="whitespace-nowrap">
               Last Updated: {formatDate(workout.updatedAt)}
