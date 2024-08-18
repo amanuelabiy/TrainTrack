@@ -17,3 +17,17 @@ export function calcWorkoutCompletion(
 
   return Math.round(completedRatio);
 }
+
+export function calcWorkoutHasStarted(
+  workout: WorkoutResponse | TodayWorkout
+): boolean {
+  for (const exercise of workout.exercises) {
+    if (exercise.workingSets) {
+      for (const workingSet of exercise.workingSets) {
+        if (workingSet.completed) return true;
+      }
+    }
+  }
+
+  return false;
+}

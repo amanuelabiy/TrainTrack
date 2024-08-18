@@ -10,8 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "../ui/progress";
-import { FaCheckCircle } from "react-icons/fa";
-import { calcWorkoutCompletion } from "@/utils/calcWorkoutCompletion";
+import {
+  calcWorkoutCompletion,
+  calcWorkoutHasStarted,
+} from "@/utils/calcWorkoutCompletion";
 import { useState } from "react";
 import WorkoutDeletionWarning from "./WorkoutDeletionWarning";
 import { useAppSelector } from "@/hooks";
@@ -57,13 +59,34 @@ function WorkoutCard({
     (state: RootState) => state.todaysWorkoutState.workoutsForToday
   );
 
+  const displayedWorkout = useAppSelector(
+    (state: RootState) => state.todaysWorkoutState.startedWorkout
+  );
+
   let workoutIsToday = false;
+  let workoutHasStarted = false;
+  let workoutIsInProgress = false;
+  let disableWorkoutEditButton = false;
 
   if (workoutsForToday) {
     workoutIsToday = workoutsForToday.some(
       (todaysWorkout) => todaysWorkout._id === workout._id
     );
+
+    if (workoutIsToday) {
+      workoutHasStarted = calcWorkoutHasStarted(workout);
+
+      if (displayedWorkout) {
+        workoutIsInProgress = displayedWorkout._id === workout._id;
+      }
+
+      if (calcWorkoutCompletion(workout) === 100) {
+        workoutHasStarted = false;
+      }
+    }
   }
+
+  disableWorkoutEditButton = workoutHasStarted || workoutIsInProgress;
 
   return (
     <>
@@ -74,7 +97,9 @@ function WorkoutCard({
             <CardTitle>{workout.workoutName}</CardTitle>
             <CardDescription>{workout.day}</CardDescription>
           </div>
-          <Progress value={calcWorkoutCompletion(workout)} className="h-1" />
+          {workoutIsToday ? (
+            <Progress value={calcWorkoutCompletion(workout)} className="h-1" />
+          ) : null}
         </CardHeader>
 
         <div className="relative flex-grow overflow-hidden h-[170px]">
@@ -103,7 +128,7 @@ function WorkoutCard({
             Delete
           </Button>
           {workoutsForToday ? (
-            workoutIsToday ? (
+            disableWorkoutEditButton ? (
               <Button
                 className="ml-3"
                 onClick={() => handleEditClick(workout)}

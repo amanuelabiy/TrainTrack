@@ -34,7 +34,11 @@ function DifferentSetsWarning({
           Warning!
         </DialogTitle>
         <div className="mx-auto">
-          <img src={stopHand} className="h-50 w-60 object-contain"></img>
+          <img
+            src={stopHand}
+            className="h-50 w-60 object-contain"
+            alt="Different Sets Warning"
+          ></img>
         </div>
         <div className="flex flex-col items-center text-center">
           <p className="font-bold">

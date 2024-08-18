@@ -18,11 +18,13 @@ function Statistics() {
   }, [dispatch, workoutHistory]);
 
   return (
-    <>
+    <div className="flex h-[89vh]">
       <WorkoutSelector />
-      <WorkoutGraph />
-      <ExerciseGraph />
-    </>
+      <div className="flex flex-col flex-grow">
+        <WorkoutGraph />
+        <ExerciseGraph />
+      </div>
+    </div>
   );
 }
 

@@ -30,7 +30,7 @@ function WorkoutGraph() {
 
   console.log("Workout History is", workoutHistoryArray);
   console.log("Workouts are", workouts);
-  return <div></div>;
+  return <div className="border-4 border-black flex-grow">WorkoutGraph</div>;
 }
 
 export default WorkoutGraph;

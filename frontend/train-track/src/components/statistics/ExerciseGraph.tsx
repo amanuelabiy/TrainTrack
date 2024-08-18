@@ -1,5 +1,5 @@
 function ExerciseGraph() {
-  return <div></div>;
+  return <div className="border-4 border-black flex-grow ">ExerciseGraph</div>;
 }
 
 export default ExerciseGraph;

@@ -215,9 +215,6 @@ const todaysWorkoutSlice = createSlice({
                 workout._id === action.payload._id ? action.payload : workout
               )
             : null;
-
-          // if (calcWorkoutCompletion(action.payload) > 0) {
-          // }
         }
       )
       .addCase(handleInProgressSaveClick.rejected, (state, action) => {
