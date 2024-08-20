@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks";
 import { RootState } from "@/store";
 import { startTodaysWorkout } from "@/features/todaysWorkout/todaysWorkoutSlice";
 import RestartWorkoutBtn from "./RestartWorkoutBtn";
+import workoutPng from "@/assets/blue-cartoon-dumbbell-tecifn5fpbzjqw4a-tecifn5fpbzjqw4a.png";
 
 function WorkoutsCarousel() {
   const dispatch = useAppDispatch();
@@ -37,7 +38,12 @@ function WorkoutsCarousel() {
                         }`}
                         key={exercise._id}
                       >
-                        <LuDumbbell className="w-8 h-8" />
+                        <img
+                          width={32}
+                          height={32}
+                          src={workoutPng}
+                          alt="barbell"
+                        />
                         <div className="flex flex-col">
                           <p className="font-bold">{exercise.name}</p>
                           <p className="text-sm">

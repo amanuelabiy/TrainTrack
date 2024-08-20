@@ -1,5 +1,5 @@
 import CreateCustomSplit from "@/components/mysplit/CreateCustomSplit";
-import SetWeeklySplit from "@/components/mysplit/SetWeeklySplit";
+// import SetWeeklySplit from "@/components/mysplit/SetWeeklySplit";
 import CustomizeWorkoutSplit from "@/components/mysplit/CustomizeWorkoutSplit";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -32,7 +32,7 @@ function MySplit() {
       {!editSplit ? (
         <>
           <CreateCustomSplit handlePageSwitch={handlePageSwitch} />
-          <SetWeeklySplit />
+          {/* <SetWeeklySplit /> */}
           <CustomizeWorkoutSplit handlePageSwitch={handlePageSwitch} />
         </>
       ) : (
