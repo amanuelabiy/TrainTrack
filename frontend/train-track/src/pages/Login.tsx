@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "@/components/register/Input";
 import LoginBtn from "@/components/register/LoginBtn";
-import GoogleLoginButton from "@/components/register/GoogleLoginButton";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { login } from "@/features/auth/authSlice";
 import { toast } from "react-toastify";
@@ -43,6 +42,12 @@ function Login() {
           placeholder="Enter username"
           {...register("username", { required: "Username is required" })}
         />
+        <Link
+          to="/login"
+          className="text-primary text-sm font-normal leading-normal pb-3 text-center underline"
+        >
+          Forgot your username?
+        </Link>
         <div>
           <div className="mb-2">
             <Input
@@ -70,7 +75,6 @@ function Login() {
         </div>
         <div className="w-full flex flex-col space-y-0">
           <LoginBtn />
-          <GoogleLoginButton />
         </div>
       </form>
     </div>

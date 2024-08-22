@@ -39,14 +39,6 @@ const router = createBrowserRouter([
         loader: todayWorkoutLoader,
       },
       {
-        path: "history",
-        element: (
-          <ProtectedRoute>
-            <History />
-          </ProtectedRoute>
-        ),
-      },
-      {
         path: "login",
         element: <Login />,
       },

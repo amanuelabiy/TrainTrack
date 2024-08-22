@@ -10,7 +10,7 @@ interface InputProps {
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ id, label, ...props }, ref: Ref<HTMLInputElement>) => {
     return (
-      <div className="flex-col mt-9">
+      <div className="flex-col mt-5">
         <label
           className="block text-foreground text-sm font-bold mb-2"
           htmlFor={id}

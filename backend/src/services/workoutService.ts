@@ -20,6 +20,7 @@ export const createWorkout = async (workoutData: WorkoutData) => {
 
   const existingWorkout = await WorkoutModel.findOne({
     workoutName: workoutName,
+    userId: userId,
   });
 
   if (existingWorkout) {
