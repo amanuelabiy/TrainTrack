@@ -1,6 +1,6 @@
 <h1>TrainTrack</h1>
 
-<p>TrainTrack is a workout planner application currently in development. It aims to help users track their workout routines, visualize their progress, and manage their fitness goals efficiently.</p>
+<p>TrainTrack is a workout planner application. It aims to help users track their workout routines, visualize their progress, and manage their fitness goals efficiently.</p>
 
 <img src="https://github.com/amanuelabiy/TrainTrack/blob/main/frontend/train-track/src/assets/TrainTrack.PNG?raw=true" alt="Portfolio Screenshot" width="600"></img>
 
